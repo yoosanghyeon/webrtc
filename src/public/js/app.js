@@ -20,7 +20,6 @@ const constraints = window.constraints = {
   video: true
 };
 
-alert("hello");
 
 async function getCameras() {
   try {
@@ -45,7 +44,7 @@ async function getCameras() {
 async function getMedia(deviceId) {
   
   const devices = await navigator.mediaDevices.enumerateDevices();
-  
+  alert(devices)
   // 마이크 체크 
   var isMic = false;
   muteBtn.hidden = true;
