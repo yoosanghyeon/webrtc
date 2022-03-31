@@ -51,7 +51,7 @@ async function getMedia(deviceId) {
   
 
   const initialConstrains = {
-    audio: isMic,
+    audio: false,
     video: { facingMode: "user" },
   };
   const cameraConstraints = {
@@ -62,7 +62,7 @@ async function getMedia(deviceId) {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
-  
+    window.stream = stream; 
     myFace.srcObject = myStream;
   
     if (!deviceId) {
@@ -201,7 +201,6 @@ function makeConnection() {
     myPeerConnection.addEventListener("addstream", handleAddStream);
   }
   
-  console.log(myStream)
   myStream
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
