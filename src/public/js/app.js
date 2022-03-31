@@ -43,23 +43,23 @@ async function getCameras() {
 
 async function getMedia(deviceId) {
   
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  alert(devices)
-  // 마이크 체크 
-  var isMic = false;
-  muteBtn.hidden = true;
-  const micDevices = devices.filter((device) => device.kind === "audioinput");
+  // const devices = await navigator.mediaDevices.enumerateDevices();
+  // alert(devices)
+  // // 마이크 체크 
+  // var isMic = false;
+  // muteBtn.hidden = true;
+  // const micDevices = devices.filter((device) => device.kind === "audioinput");
  
-  if(micDevices.length > 0){
-    isMic = isMic;
-    muteBtn.hidden = false;
-  }
+  // if(micDevices.length > 0){
+  //   isMic = isMic;
+  //   muteBtn.hidden = false;
+  // }
   
 
-  const initialConstrains = {
-    audio: isMic,
-    video: true,
-  };
+  // const initialConstrains = {
+  //   audio: isMic,
+  //   video: true,
+  // };
 
   
   const cameraConstraints = {
