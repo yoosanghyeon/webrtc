@@ -35,12 +35,26 @@ async function getCameras() {
 }
 
 async function getMedia(deviceId) {
+  
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  
+  // 마이크 체크 
+  var isMic = false;
+  muteBtn.hidden = true;
+  const micDevices = devices.filter((device) => device.kind === "audioinput");
+ 
+  if(micDevices.length > 0){
+    isMic = true;
+    muteBtn.hidden = false;
+  }
+  
+
   const initialConstrains = {
-    audio: false,
+    audio: isMic,
     video: { facingMode: "user" },
   };
   const cameraConstraints = {
-    audio: false,
+    audio: isMic,
     video: { deviceId: { exact: deviceId } },
   };
   try {
