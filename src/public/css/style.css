@@ -1,0 +1,28 @@
+#myStream{
+    width: 100%;
+    display: flex; justify-content: space-around
+}
+
+#myFace{
+    width: 40%;
+    max-width: 400;
+}
+
+#peerFace{
+    width: 40%;
+    max-width: 400;
+}
+
+#muteMenu{
+    display: flex;
+    justify-content: center;
+}
+
+#whitespace{
+    width: 2%;
+}
+
+#changeCameraMenu{
+    display: flex;
+    justify-content: center;
+}
