@@ -55,14 +55,14 @@ async function getMedia(deviceId) {
     video: { facingMode: "user" },
   };
   const cameraConstraints = {
-    audio: isMic,
+    audio: false,
     video: { deviceId: { exact: deviceId } },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
-    window.stream = stream; 
+
     myFace.srcObject = myStream;
   
     if (!deviceId) {
