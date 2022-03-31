@@ -49,8 +49,7 @@ async function getMedia(deviceId) {
     );
   
     myFace.srcObject = myStream;
-    const peerFace = document.getElementById("peerFace");
-    peerFace.srcObject = myStream;
+  
     if (!deviceId) {
       await getCameras();
     }
