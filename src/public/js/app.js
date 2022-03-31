@@ -70,6 +70,7 @@ async function getMedia(deviceId) {
     }
   } catch (e) {
     console.log(e);
+    alert(e);
   }
 }
 
