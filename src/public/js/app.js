@@ -15,10 +15,6 @@ let roomName;
 let myPeerConnection;
 let myDataChannel;
 
-const constraints = window.constraints = {
-  audio: false,
-  video: true
-};
 
 
 async function getCameras() {
@@ -56,19 +52,19 @@ async function getMedia(deviceId) {
   // }
   
 
-  // const initialConstrains = {
-  //   audio: isMic,
-  //   video: true,
-  // };
+  const initialConstrains = {
+    audio: false,
+    video: true,
+  };
 
   
   const cameraConstraints = {
     audio: false,
     video: { deviceId: { exact: deviceId } },
   };
-  try {
+  try { navigator.mediaDevices.getUserMedia
     myStream = await navigator.mediaDevices.getUserMedia(
-      deviceId ? cameraConstraints : constraints
+      deviceId ? cameraConstraints : initialConstrains
     );
     alert(myStream);  
     myFace.srcObject = myStream;
