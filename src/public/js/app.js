@@ -31,6 +31,7 @@ async function getCameras() {
     });
   } catch (e) {
     console.log(e);
+    alert(e)
   }
 }
 
