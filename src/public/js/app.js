@@ -54,7 +54,7 @@ async function getMedia(deviceId) {
 
   const initialConstrains = {
     audio: false,
-    video: true,
+    video: true
   };
 
   
