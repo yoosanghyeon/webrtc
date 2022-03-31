@@ -39,7 +39,7 @@ async function init() {
     handleSuccess(stream);
     // e.target.disabled = true;
   } catch (e) {
-    // handleError(e);
+    handleError(e);
     console.log(e)
   }
 }
