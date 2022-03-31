@@ -20,6 +20,7 @@ const constraints = window.constraints = {
   video: true
 };
 
+alert("hello");
 
 async function getCameras() {
   try {
