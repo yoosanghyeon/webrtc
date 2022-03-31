@@ -62,7 +62,7 @@ async function getMedia(deviceId) {
     audio: false,
     video: { deviceId: { exact: deviceId } },
   };
-  try { navigator.mediaDevices.getUserMedia
+  try { 
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
@@ -74,7 +74,7 @@ async function getMedia(deviceId) {
     }
   } catch (e) {
     console.log(e);
-    alert(e);
+    alert("error", e);
   }
 }
 
