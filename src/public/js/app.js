@@ -15,6 +15,10 @@ let roomName;
 let myPeerConnection;
 let myDataChannel;
 
+const constraints = window.constraints = {
+  audio: false,
+  video: true
+};
 
 
 async function getCameras() {
@@ -39,22 +43,22 @@ async function getCameras() {
 
 async function getMedia(deviceId) {
   
-  // const devices = await navigator.mediaDevices.enumerateDevices();
-  // alert(devices)
-  // // 마이크 체크 
-  // var isMic = false;
-  // muteBtn.hidden = true;
-  // const micDevices = devices.filter((device) => device.kind === "audioinput");
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  
+  // 마이크 체크 
+  var isMic = false;
+  muteBtn.hidden = true;
+  const micDevices = devices.filter((device) => device.kind === "audioinput");
  
-  // if(micDevices.length > 0){
-  //   isMic = isMic;
-  //   muteBtn.hidden = false;
-  // }
+  if(micDevices.length > 0){
+    isMic = isMic;
+    muteBtn.hidden = false;
+  }
   
 
   const initialConstrains = {
-    audio: false,
-    video: true
+    audio: isMic,
+    video: true,
   };
 
   
@@ -62,9 +66,9 @@ async function getMedia(deviceId) {
     audio: false,
     video: { deviceId: { exact: deviceId } },
   };
-  try { 
+  try {
     myStream = await navigator.mediaDevices.getUserMedia(
-      deviceId ? cameraConstraints : initialConstrains
+      deviceId ? cameraConstraints : constraints
     );
     alert(myStream);  
     myFace.srcObject = myStream;
@@ -74,7 +78,7 @@ async function getMedia(deviceId) {
     }
   } catch (e) {
     console.log(e);
-    alert("error", e);
+    alert(e);
   }
 }
 
