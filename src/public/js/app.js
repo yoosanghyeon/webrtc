@@ -45,14 +45,14 @@ async function getMedia(deviceId) {
   const micDevices = devices.filter((device) => device.kind === "audioinput");
  
   if(micDevices.length > 0){
-    isMic = true;
+    isMic = isMic;
     muteBtn.hidden = false;
   }
   
 
   const initialConstrains = {
-    audio: false,
-    video: { facingMode: "user" },
+    audio: isMic,
+    video: true,
   };
   const cameraConstraints = {
     audio: false,
