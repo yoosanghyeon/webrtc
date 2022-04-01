@@ -1,4 +1,4 @@
-WEBRTC 이해하기 위한 SIP 사전학습
+WEBRTC 이해하기 학습
 
 1. SIP 엔지니어 블로그 - https://brunch.co.kr/magazine/understandsip
 2. SIP의 구조 - https://brunch.co.kr/@linecard/130
@@ -13,12 +13,13 @@ WEBRTC 이해하기 위한 SIP 사전학습
 2. NAT : NAT는 사설IP를 공인IP로 필요한 주소 변환 서비스.(Network Address Translation)
 3. WebRTC 구성 :
    https://eytanmanor.medium.com/an-architectural-overview-for-web-rtc-a-protocol-for-implementing-video-conferencing-e2a914628d0e
-4. Stun 서부 구성 방법 :
+4. Stun 서버 구성 방법 :
    http://john-home.iptime.org:8085/xe/index.php?mid=board_sKSz42&document_srl=1546
 5. PeerConnection 교환 과정
 
   ![1648529898589.png](image/unknownWord/1648529898589.png)
 
-
 6. IOS document link :
    https://www.audiocodes.com/media/13477/webrtc-ios-client-sdk-api-reference-guide.pdf
+7. 아파치 서버와 node.js 설정
+   https://velog.io/@devyang97/Apache-Node.js-%EB%8F%84%EB%A9%94%EC%9D%B8-%EC%97%B0%EA%B2%B0
