@@ -1,12 +1,16 @@
 const http = require("http");
 const SocketIO = require("socket.io");
 const express = require("express");
+var fs = require('fs');
 
 const app = express();
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
-app.get("/", (_, res) => res.render("test"));
+app.get("/", (_, res) => {
+  // res.render("index.html");
+  res.sendFile(__dirname + "/views/" + "index.html")
+});
 app.get("/*", (_, res) => res.redirect("/"));
 
 const port = 2000;
