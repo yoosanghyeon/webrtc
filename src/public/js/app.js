@@ -6,7 +6,7 @@ const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
 const otherVideos = document.getElementById("otherVideos");
-const test = document.getElementById("test");
+
 
 call.hidden = true;
 
@@ -127,6 +127,9 @@ async function handleCameraChange() {
  
   }
 }
+
+
+
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);

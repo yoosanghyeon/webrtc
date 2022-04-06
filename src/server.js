@@ -28,7 +28,11 @@ app.get("/*", (_, res) => res.redirect("/"));
 const port = 2000;
 
 const httpServer = http.createServer(app);
-const wsServer = SocketIO(httpServer);
+const wsServer = SocketIO(httpServer, {
+  pingTimeout: 2000,
+  pingInterval: 2000
+
+});
 
 let users = {};
 
