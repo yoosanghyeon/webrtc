@@ -2,22 +2,26 @@ const http = require("http");
 const SocketIO = require("socket.io");
 const express = require("express");
 const localtunnel = require("localtunnel");
-
+const path = require("path");
 
 const app = express();
+
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
+
+
 app.get("/", (_, res) => {
   res.render("home");
-  // res.sendFile(__dirname + "/views/" + "index.html")
 });
 
 
 app.get("/count", (req, res) => {
-  
   res.send(users);
 });
+app.get(() =>{
+
+})
 app.get("/*", (_, res) => res.redirect("/"));
 
 
