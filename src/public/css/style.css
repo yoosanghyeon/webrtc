@@ -23,6 +23,19 @@
 }
 
 #changeCameraMenu{
-    display: flex;
+
     justify-content: center;
+}
+
+
+#otherVideos{
+    text-align: center;
+}
+
+video{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 400px;
+    max-height: 400px;
 }
