@@ -25,7 +25,7 @@
 }
 
 #changeCameraMenu{
-
+    display: flex;
     justify-content: center;
 }
 

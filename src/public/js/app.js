@@ -5,7 +5,8 @@ const muteBtn = document.getElementById("mute");
 const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
-const otherVideos = document.getElementById("otherVideos")
+const otherVideos = document.getElementById("otherVideos");
+const test = document.getElementById("test");
 
 call.hidden = true;
 
@@ -113,15 +114,16 @@ function handleCameraClick() {
 
 async function handleCameraChange() {
   await getMedia(camerasSelect.value);
-  if (myPeerConnections) {
-    myPeerConnections.forEach((myPeerConnection) =>{
-      console.log(myPeerConnection)
-      const videoTrack = myStream.getVideoTracks()[0];
+
+
+  for(socketId in myPeerConnections){
+    const myPeerConnection = myPeerConnections[socketId];  
+    const videoTrack = myStream.getVideoTracks()[0];
       const videoSender = myPeerConnection
         .getSenders()
         .find((sender) => sender.track.kind === "video");
       videoSender.replaceTrack(videoTrack);
-    })
+
  
   }
 }
