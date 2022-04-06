@@ -263,8 +263,8 @@ async function makeConnection(socketId) {
     myPeerConnection.addEventListener("track", (data) => {
     
       const peerFace = document.createElement("video");
-      peerFace.setAttribute("autoplay", "playsinline");
-  
+      peerFace.setAttribute("autoplay", "");
+      peerFace.setAttribute("playsinline", "");
       peerFace.srcObject = data.streams[0];
       peerFace.style.width = 50%
       otherVideos.append(peerFace);
@@ -275,8 +275,10 @@ async function makeConnection(socketId) {
     myPeerConnection.addEventListener("addstream", (data) => {
 
       const peerFace = document.createElement("video");
+      peerFace.setAttribute("autoplay", "");
+      peerFace.setAttribute("playsinline", "");
       peerFace.srcObject = data.stream;
-      peerFace.setAttribute("autoplay", "playsinline");
+      peerFace.autoplay = true;
       peerFace.style.width = 50%
       otherVideos.append(peerFace);
       otherVideoViews[socketId] = peerFace;

@@ -4,12 +4,14 @@
 }
 
 #myFace{
-    width: 40%;
+    width: 240px;
+    height: 240px;
     max-width: 400;
 }
 
 #peerFace{
-    width: 40%;
+    width: 240px;
+    height: 240px;
     max-width: 400;
 }
 
@@ -36,6 +38,6 @@ video{
     display: block;
     margin-left: auto;
     margin-right: auto;
-    max-width: 400px;
-    max-height: 400px;
+    width: 240px;
+    height: 240px;
 }
