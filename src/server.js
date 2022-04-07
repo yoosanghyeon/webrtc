@@ -3,6 +3,7 @@ const SocketIO = require("socket.io");
 const express = require("express");
 const localtunnel = require("localtunnel");
 const path = require("path");
+const fs = require("fs")
 
 const app = express();
 
@@ -12,7 +13,8 @@ app.use("/public", express.static(__dirname + "/public"));
 
 
 app.get("/", (_, res) => {
-  res.render("home");
+  // res.render("home");
+  res.sendFile(__dirname + "/views/" + "index.html")
 });
 
 
