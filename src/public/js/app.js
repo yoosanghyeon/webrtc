@@ -244,24 +244,21 @@ socket.on("ice", (ice, socketId) => {
   myPeerConnection.addIceCandidate(ice);
 
 
-  const {codecs} = RTCRtpSender.getCapabilities('video');
+  // const {codecs} = RTCRtpSender.getCapabilities('video');
 
-  codecs.forEach((codec) =>{
-    console.log(codec)
-  })
-  let preferCodes = codecs.slice(6, 7);
-  console.log(preferCodes);
-  myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
-  console.log()
+  // codecs.forEach((codec) =>{
+  //   console.log(codec)
+  // })
+  // let preferCodes = codecs.slice(6, 7);
+  // console.log(preferCodes);
+  // myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
+  // console.log()
 });
 
 socket.on("userDisconnect", (socketId) => {
   console.log( "disconnect ::", socketId);
   
   if(otherVideoViews[socketId] !==  undefined){
-
-    
-  
     otherVideos.removeChild(otherVideoViews[socketId]);
     delete otherVideoViews[socketId]
     delete myPeerConnections[socketId]
@@ -333,13 +330,13 @@ async function makeConnection(socketId) {
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
 
-    myDataChannel = myPeerConnection.createDataChannel("chat");
+  myDataChannel = myPeerConnection.createDataChannel("chat");
     myDataChannel.addEventListener("message", (event) => console.log(event.data));
-    console.log("made data channel");
+  console.log("made data channel");
 
  
   
-    myPeerConnections[socketId] = myPeerConnection;
+  myPeerConnections[socketId] = myPeerConnection;
   return myPeerConnection;  
 }
 
