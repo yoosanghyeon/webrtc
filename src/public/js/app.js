@@ -102,6 +102,10 @@ async function getMedia(deviceId) {
     myFace.srcObject = myStream;
    
     
+    if (!deviceId) {
+      await getCameras();
+    }
+    
   } catch (e) {
     console.log(e);
   }
