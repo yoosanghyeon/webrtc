@@ -13,8 +13,8 @@ app.use("/public", express.static(__dirname + "/public"));
 
 
 app.get("/", (_, res) => {
-  // res.render("home");
-  res.sendFile(__dirname + "/views/" + "index.html")
+  res.render("home");
+  // res.sendFile(__dirname + "/views/" + "index.html")
 });
 
 

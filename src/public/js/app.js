@@ -87,6 +87,13 @@ async function getMedia(deviceId) {
   //   console.log(e);
   //   alert(e);
   // }
+
+  if(myStream){
+    myStream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
+
   const initialConstrains = {
     audio: false,
     video: { facingMode: "user" },
