@@ -88,11 +88,11 @@ async function getMedia(deviceId) {
   //   alert(e);
   // }
 
-  // if(myStream){
-  //   myStream.getTracks().forEach(track => {
-  //     track.stop();
-  //   });
-  // }
+  if(myStream){
+    myStream.getTracks().forEach(track => {
+      track.stop();
+    });
+  }
 
   const initialConstrains = {
     audio: false,
@@ -144,8 +144,8 @@ function handleCameraClick() {
 }
 
 async function handleCameraChange() {
+  
   await getMedia(camerasSelect.value);
-
 
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
@@ -154,9 +154,8 @@ async function handleCameraChange() {
         .getSenders()
         .find((sender) => sender.track.kind === "video");
       videoSender.replaceTrack(videoTrack);
-
- 
   }
+
 }
 
 

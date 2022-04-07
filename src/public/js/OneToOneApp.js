@@ -15,8 +15,6 @@ let roomName;
 let myPeerConnection;
 let myDataChannel;
 
-
-
 async function getCameras() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
@@ -33,49 +31,28 @@ async function getCameras() {
     });
   } catch (e) {
     console.log(e);
-    alert(e)
   }
 }
 
 async function getMedia(deviceId) {
-  
-
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  
-  // 마이크 체크 
-  var isMic = false;
-  muteBtn.hidden = true;
-  const micDevices = devices.filter((device) => device.kind === "audioinput");
- 
-  if(micDevices.length > 0){
-    isMic = isMic;
-    muteBtn.hidden = false;
-  }
-  
-
   const initialConstrains = {
-    audio: isMic,
-    video: true,
+    audio: true,
+    video: { facingMode: "user" },
   };
-
-  
   const cameraConstraints = {
-    audio: false,
+    audio: true,
     video: { deviceId: { exact: deviceId } },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
- 
     myFace.srcObject = myStream;
-  
     if (!deviceId) {
       await getCameras();
     }
   } catch (e) {
     console.log(e);
-    alert(e);
   }
 }
 
@@ -150,8 +127,6 @@ socket.on("welcome", async () => {
   console.log("made data channel");
   const offer = await myPeerConnection.createOffer();
   myPeerConnection.setLocalDescription(offer);
-
-  console.log(myPeerConnection)
   console.log("sent the offer");
   socket.emit("offer", offer, roomName);
 });
@@ -179,17 +154,6 @@ socket.on("answer", (answer) => {
 socket.on("ice", (ice) => {
   console.log("received candidate");
   myPeerConnection.addIceCandidate(ice);
-
-  
-  const {codecs} = RTCRtpSender.getCapabilities('video');
-
-  codecs.forEach((codec) =>{
-    // console.log(codec)
-  })
-  let preferCodes = codecs.slice(6, 7);
-  console.log(preferCodes);
-  myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
-  console.log()
 });
 
 // RTC Code
@@ -208,20 +172,8 @@ function makeConnection() {
       },
     ],
   });
-
-
-  
   myPeerConnection.addEventListener("icecandidate", handleIce);
-  if(myPeerConnection.addTrack !== undefined){
-    myPeerConnection.addEventListener("track", (data) => {
-    
-      const peerFace = document.getElementById("peerFace");
-      peerFace.srcObject = data.streams[0];
-    });
-  }else{
-    myPeerConnection.addEventListener("addstream", handleAddStream);
-  }
-  
+  myPeerConnection.addEventListener("addstream", handleAddStream);
   myStream
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
@@ -233,7 +185,6 @@ function handleIce(data) {
 }
 
 function handleAddStream(data) {
-  console.log("handleAddStream", data)
   const peerFace = document.getElementById("peerFace");
   peerFace.srcObject = data.stream;
 }
