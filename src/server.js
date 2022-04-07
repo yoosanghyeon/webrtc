@@ -107,7 +107,7 @@ const port = 2000;
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
-app.get("/", (_, res) => res.render("home"));
+app.get("/", (_, res) => res.render("webSocketHome"));
 app.get("/*", (_, res) => res.redirect("/"));
 
 const httpServer = http.createServer(app);
