@@ -22,6 +22,10 @@ WEBRTC 이해하기 학습
 6. IOS document link :
    https://www.audiocodes.com/media/13477/webrtc-ios-client-sdk-api-reference-guide.pdf
 7. 아파치 서버와 node.js 설정
-   
 8. webrtc github 저장소(간단한 사용법 부터 코덱, 볼륨 컨트롤)
    https://webrtc.github.io/samples/
+9. 코덱에 관련한 정보(default : VP9 -> H264 변경할때)
+
+- https://dom607.tistory.com/2 (개발시 코덱에 관한 경험과 코드 수정)
+
+10. WebRTC 구현시 트랜스코딩이 필요 할 수 있다.

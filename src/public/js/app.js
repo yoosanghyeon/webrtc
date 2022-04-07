@@ -68,7 +68,7 @@ async function getMedia(deviceId) {
 
   
   const cameraConstraints = {
-    audio: false,
+    audio: isMic,
     video: { deviceId: { exact: deviceId } },
   };
   try {
@@ -80,6 +80,8 @@ async function getMedia(deviceId) {
   
     if (!deviceId) {
       await getCameras();
+    }else{
+      alert(deviceId);
     }
   } catch (e) {
     console.log(e);
@@ -214,15 +216,15 @@ socket.on("ice", (ice, socketId) => {
   myPeerConnection.addIceCandidate(ice);
 
 
-  // const {codecs} = RTCRtpSender.getCapabilities('video');
+  const {codecs} = RTCRtpSender.getCapabilities('video');
 
-  // codecs.forEach((codec) =>{
-  //   // console.log(codec)
-  // })
-  // let preferCodes = codecs.slice(6, 7);
-  // console.log(preferCodes);
-  // myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
-  // console.log()
+  codecs.forEach((codec) =>{
+    console.log(codec)
+  })
+  let preferCodes = codecs.slice(6, 7);
+  console.log(preferCodes);
+  myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
+  console.log()
 });
 
 socket.on("userDisconnect", (socketId) => {
