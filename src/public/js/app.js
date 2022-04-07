@@ -88,11 +88,11 @@ async function getMedia(deviceId) {
   //   alert(e);
   // }
 
-  if(myStream){
-    myStream.getTracks().forEach(track => {
-      track.stop();
-    });
-  }
+  // if(myStream){
+  //   myStream.getTracks().forEach(track => {
+  //     track.stop();
+  //   });
+  // }
 
   const initialConstrains = {
     audio: false,
