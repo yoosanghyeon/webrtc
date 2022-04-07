@@ -48,44 +48,62 @@ async function getCameras() {
 async function getMedia(deviceId) {
   
 
-  const devices = await navigator.mediaDevices.enumerateDevices();
+  // const devices = await navigator.mediaDevices.enumerateDevices();
   
-  // 마이크 체크 
-  var isMic = false;
-  muteBtn.hidden = true;
-  const micDevices = devices.filter((device) => device.kind === "audioinput");
+  // // 마이크 체크 
+  // var isMic = false;
+  // muteBtn.hidden = true;
+  // const micDevices = devices.filter((device) => device.kind === "audioinput");
  
-  if(micDevices.length > 0){
-    isMic = isMic;
-    muteBtn.hidden = false;
-  }
+  // if(micDevices.length > 0){
+  //   isMic = isMic;
+  //   muteBtn.hidden = false;
+  // }
   
 
+  // const initialConstrains = {
+  //   audio: isMic,
+  //   video: true,
+  // };
+
+  
+  // const cameraConstraints = {
+  //   audio: isMic,
+  //   video: { deviceId: { exact: deviceId } },
+  // };
+  // try {
+  //   myStream = await navigator.mediaDevices.getUserMedia(
+  //     deviceId ? cameraConstraints : initialConstrains
+  //   );
+ 
+  //   myFace.srcObject = myStream;
+  
+  //   if (!deviceId) {
+  //     await getCameras();
+  //   }else{
+  //     alert(deviceId);
+  //   }
+  // } catch (e) {
+  //   console.log(e);
+  //   alert(e);
+  // }
   const initialConstrains = {
-    audio: isMic,
-    video: true,
+    audio: false,
+    video: { facingMode: "user" },
   };
-
-  
   const cameraConstraints = {
-    audio: isMic,
+    audio: false,
     video: { deviceId: { exact: deviceId } },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
- 
     myFace.srcObject = myStream;
-  
-    if (!deviceId) {
-      await getCameras();
-    }else{
-      alert(deviceId);
-    }
+   
+    
   } catch (e) {
     console.log(e);
-    alert(e);
   }
 }
 
