@@ -278,16 +278,28 @@ socket.on("connect_error", (error) => {
 // RTC Code
 
 async function makeConnection(socketId) {
+  // const myPeerConnection = new RTCPeerConnection({
+  //   iceServers: [
+  //     {
+  //       urls: 'turn:211.119.132.242:3478?transport=tcp',
+  //       credential: 'test123',
+  //       username: 'test'
+  //     }
+  //   ]
+  // });
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: 'turn:211.119.132.242:3478?transport=tcp',
-        credential: 'test123',
-        username: 'test'
-      }
-    ]
+        urls: [
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+        ],
+      },
+    ],
   });
-
 
   
   myPeerConnection.addEventListener("icecandidate", (data) =>{
