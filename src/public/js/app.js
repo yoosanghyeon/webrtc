@@ -284,6 +284,11 @@ async function makeConnection(socketId) {
         urls: 'turn:211.119.132.242:3478?transport=tcp',
         credential: 'test123',
         username: 'test'
+      },
+      {
+        urls: 'turn:211.119.132.242:3478?transport=udp',
+        credential: 'test123',
+        username: 'test'
       }
     ]
   });
