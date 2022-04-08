@@ -341,7 +341,7 @@ async function makeConnection(socketId) {
     if (myPeerConnection.iceConnectionState === "failed") {
       /* possibly reconfigure the connection in some way here */
       /* then request ICE restart */
-      // pc.restartIce();
+      myPeerConnection.restartIce();
     }
   });
   
