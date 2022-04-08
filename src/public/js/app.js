@@ -1,4 +1,6 @@
-const socket = io();
+const socket = io("",{
+  
+});
 
 const myFace = document.getElementById("myFace");
 const muteBtn = document.getElementById("mute");
@@ -130,6 +132,7 @@ function handleMuteClick() {
     muted = false;
   }
 }
+
 function handleCameraClick() {
   myStream
     .getVideoTracks()
@@ -269,6 +272,10 @@ socket.on("userDisconnect", (socketId) => {
 
  
 })
+
+socket.on("connect_error", (error) => {
+  console.log(error);
+});
 
 // RTC Code
 
