@@ -3,6 +3,7 @@ const SocketIO = require("socket.io");
 const express = require("express");
 const localtunnel = require("localtunnel");
 const path = require("path");
+const cors = require('cors');
 const fs = require("fs")
 
 const app = express();
@@ -12,6 +13,7 @@ const port = 2000;
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
+
 
 
 app.get("/", (_, res) => {
@@ -34,7 +36,7 @@ app.get("/*", (_, res) => res.redirect("/"));
 const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer, {
   pingTimeout: 2000,
-  pingInterval: 2000
+  pingInterval: 2000,
 
 });
 

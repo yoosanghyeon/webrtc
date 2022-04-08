@@ -335,7 +335,15 @@ async function makeConnection(socketId) {
     myDataChannel.addEventListener("message", (event) => console.log(event.data));
   console.log("made data channel");
 
- 
+  // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/restartIce
+  myPeerConnection.addEventListener("iceconnectionstatechange", event => {
+    console.log(event)
+    if (myPeerConnection.iceConnectionState === "failed") {
+      /* possibly reconfigure the connection in some way here */
+      /* then request ICE restart */
+      // pc.restartIce();
+    }
+  });
   
   myPeerConnections[socketId] = myPeerConnection;
   return myPeerConnection;  
