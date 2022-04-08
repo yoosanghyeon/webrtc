@@ -281,14 +281,12 @@ async function makeConnection(socketId) {
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: 'turn:211.119.132.242:3478?transport=tcp',
-        credential: 'test123',
-        username: 'test'
+        urls: 'turn:test@211.119.132.242:3478?transport=tcp',
+        credential: 'test123'
       },
       {
-        urls: 'turn:211.119.132.242:3478?transport=udp',
-        credential: 'test123',
-        username: 'test'
+        urls: 'turn:test@211.119.132.242:3478?transport=udp',
+        credential: 'test123'
       }
     ]
   });
