@@ -278,46 +278,46 @@ socket.on("connect_error", (error) => {
 // RTC Code
 
 async function makeConnection(socketId) {
-  const myPeerConnection = new RTCPeerConnection({
-    iceServers: [
-      {
-        urls: 'stun:stun.l.google.com:19302',
-      },
-      {
-        urls: 'stun:stun1.l.google.com:19302',
-      },
-      {
-        urls: 'stun:stun2.l.google.com:19302',
-      },
-      {
-        urls: 'stun:stun3.l.google.com:19302',
-      },
-      {
-        urls: 'stun:stun4.l.google.com:19302',
-      },
-      {
-        urls: 'turn:211.119.132.242:3478?transport=tcp',
-        credential: 'test123',
-        username: 'test'
-      },
-      {
-        urls: 'turn:211.119.132.242:3478?transport=udp',
-        credential: 'test123',
-        username: 'test'
-      }
-    ]
-  });
-
-
   // const myPeerConnection = new RTCPeerConnection({
   //   iceServers: [
   //     {
-  //       urls: 'turn:146.56.140.8:3478?transport=tcp',
+  //       urls: 'stun:stun.l.google.com:19302',
+  //     },
+  //     {
+  //       urls: 'stun:stun1.l.google.com:19302',
+  //     },
+  //     {
+  //       urls: 'stun:stun2.l.google.com:19302',
+  //     },
+  //     {
+  //       urls: 'stun:stun3.l.google.com:19302',
+  //     },
+  //     {
+  //       urls: 'stun:stun4.l.google.com:19302',
+  //     },
+  //     {
+  //       urls: 'turn:211.119.132.242:3478?transport=tcp',
+  //       credential: 'test123',
+  //       username: 'test'
+  //     },
+  //     {
+  //       urls: 'turn:211.119.132.242:3478?transport=udp',
   //       credential: 'test123',
   //       username: 'test'
   //     }
   //   ]
   // });
+
+
+  const myPeerConnection = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: 'turn:146.56.140.8:3478?transport=tcp',
+        credential: 'test123',
+        username: 'test'
+      }
+    ]
+  });
 
   // turn:146.56.140.8:3478?transport=tcp 
   // const myPeerConnection = new RTCPeerConnection({
