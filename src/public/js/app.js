@@ -43,50 +43,28 @@ async function getCameras() {
 }
 
 
-
+// mic gain global variable
+var audioContext = new AudioContext();
+var gainNode = audioContext.createGain(); 
 
 async function getMedia(deviceId) {
   
 
-  // const devices = await navigator.mediaDevices.enumerateDevices();
+  const devices = await navigator.mediaDevices.enumerateDevices();
   
-  // // 마이크 체크 
-  // var isMic = false;
-  // muteBtn.hidden = true;
-  // const micDevices = devices.filter((device) => device.kind === "audioinput");
+  // 마이크 체크 
+  var isMic = false;
+  muteBtn.hidden = true;
+  const micDevices = devices.filter((device) => device.kind === "audioinput");
  
-  // if(micDevices.length > 0){
-  //   isMic = isMic;
-  //   muteBtn.hidden = false;
-  // }
+  if(micDevices.length > 0){
+    isMic = true;
+    muteBtn.hidden = false;
+  }
   
 
-  // const initialConstrains = {
-  //   audio: isMic,
-  //   video: true,
-  // };
 
-  
-  // const cameraConstraints = {
-  //   audio: isMic,
-  //   video: { deviceId: { exact: deviceId } },
-  // };
-  // try {
-  //   myStream = await navigator.mediaDevices.getUserMedia(
-  //     deviceId ? cameraConstraints : initialConstrains
-  //   );
- 
-  //   myFace.srcObject = myStream;
-  
-  //   if (!deviceId) {
-  //     await getCameras();
-  //   }else{
-  //     alert(deviceId);
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  //   alert(e);
-  // }
+
 
   if(myStream){
     myStream.getTracks().forEach(track => {
@@ -95,17 +73,28 @@ async function getMedia(deviceId) {
   }
 
   const initialConstrains = {
-    audio: false,
+    audio: isMic,
     video: { facingMode: "user" },
   };
   const cameraConstraints = {
-    audio: false,
+    audio: isMic,
     video: { deviceId: { exact: deviceId } },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
     );
+
+    if(isMic){
+      // audio gain control 
+      audioSource = audioContext.createMediaStreamSource(myStream);
+      audioDestination = audioContext.createMediaStreamDestination();
+      audioSource.connect(gainNode);
+      gainNode.connect(audioDestination);
+      gainNode.gain.value = 1;
+    }
+
+
     myFace.srcObject = myStream;
    
     
@@ -319,22 +308,6 @@ async function makeConnection(socketId) {
     ]
   });
 
-  // turn:146.56.140.8:3478?transport=tcp 
-  // const myPeerConnection = new RTCPeerConnection({
-  //   iceServers: [
-  //     {
-  //       urls: [
-  //         "stun:stun.l.google.com:19302",
-  //         "stun:stun1.l.google.com:19302",
-  //         "stun:stun2.l.google.com:19302",
-  //         "stun:stun3.l.google.com:19302",
-  //         "stun:stun4.l.google.com:19302",
-  //       ],
-  //     },
-  //   ],
-  // });
-
-  
   myPeerConnection.addEventListener("icecandidate", (data) =>{
     socket.emit("ice", data.candidate, mySocketId, socketId);
   });
@@ -347,11 +320,12 @@ async function makeConnection(socketId) {
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
+      // peerFace.setAttribute("controls", "");
       peerFace.srcObject = data.streams[0];
       peerFace.style.width = 50%
       otherVideos.append(peerFace);
       otherVideoViews[socketId] = peerFace;
-
+      console.log(peerFace);
     });
   }else{
     myPeerConnection.addEventListener("addstream", (data) => {
@@ -359,12 +333,13 @@ async function makeConnection(socketId) {
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
+      // peerFace.setAttribute("controls", "");
       peerFace.srcObject = data.stream;
       peerFace.autoplay = true;
       peerFace.style.width = 50%
       otherVideos.append(peerFace);
       otherVideoViews[socketId] = peerFace;
-
+      console.log(peerFace);
     });
   }
   

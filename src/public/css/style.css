@@ -1,12 +1,17 @@
-#myStream{
-    width: 100%;
-    display: flex; justify-content: space-around
+#myStream, .center_align{
+    display: flex;
+    align-items: center;
 }
 
 #myFace{
     width: 240px;
     height: 240px;
     max-width: 400;
+}
+
+.inner_center{
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #peerFace{
@@ -40,4 +45,19 @@ video{
     margin-right: auto;
     width: 240px;
     height: 240px;
+}
+
+
+#mute, #camera{
+    width: 20%;
+}
+
+#cameras{
+    width: 50%;
+}
+
+#micGain{
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
 }

@@ -8,6 +8,7 @@ const fs = require("fs")
 
 const app = express();
 
+
 const port = 2000;
 
 app.set("view engine", "pug");
@@ -37,7 +38,6 @@ const httpServer = http.createServer(app);
 const wsServer = SocketIO(httpServer, {
   pingTimeout: 2000,
   pingInterval: 2000,
-
 });
 
 let users = {};
