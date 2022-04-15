@@ -131,10 +131,17 @@ async function handleCameraChange() {
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
     const videoTrack = myStream.getVideoTracks()[0];
+
       const videoSender = myPeerConnection
         .getSenders()
         .find((sender) => sender.track.kind === "video");
       videoSender.replaceTrack(videoTrack);
+
+      const audioTrack = myStream.getAudioTracks()[0];
+      const audioSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "audio");
+      audioSender.replaceTrack(audioTrack);
   }
 
 }
