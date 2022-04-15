@@ -6,7 +6,8 @@ const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
 const otherVideos = document.getElementById("otherVideos");
-
+const micGain = document.getElementById("micGain");
+const gainValue = document.getElementById("gainValue");
 
 call.hidden = true;
 
@@ -43,9 +44,8 @@ async function getCameras() {
 }
 
 
-// mic gain global variable
-var audioContext = new AudioContext();
-var gainNode = audioContext.createGain(); 
+
+
 
 async function getMedia(deviceId) {
   
@@ -85,18 +85,16 @@ async function getMedia(deviceId) {
       deviceId ? cameraConstraints : initialConstrains
     );
 
-    if(isMic){
-      // audio gain control 
-      audioSource = audioContext.createMediaStreamSource(myStream);
-      audioDestination = audioContext.createMediaStreamDestination();
-      audioSource.connect(gainNode);
-      gainNode.connect(audioDestination);
-      gainNode.gain.value = 1;
-    }
 
 
-    myFace.srcObject = myStream;
+
    
+
+    if(isMic){
+
+      gotStream(myStream);
+      myFace.srcObject = myStream;
+    }
     
     if (!deviceId) {
       await getCameras();
@@ -154,7 +152,12 @@ async function handleCameraChange() {
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
 camerasSelect.addEventListener("input", handleCameraChange);
-
+micGain.addEventListener("input", (event) =>{
+  
+  changeMicrophoneLevel(micGain.value);
+  gainValue.innerText = micGain.value;
+  
+})
 // Welcome Form (join a room)
 
 const welcome = document.getElementById("welcome");
@@ -267,35 +270,7 @@ socket.on("connect_error", (error) => {
 // RTC Code
 
 async function makeConnection(socketId) {
-  // const myPeerConnection = new RTCPeerConnection({
-  //   iceServers: [
-  //     {
-  //       urls: 'stun:stun.l.google.com:19302',
-  //     },
-  //     {
-  //       urls: 'stun:stun1.l.google.com:19302',
-  //     },
-  //     {
-  //       urls: 'stun:stun2.l.google.com:19302',
-  //     },
-  //     {
-  //       urls: 'stun:stun3.l.google.com:19302',
-  //     },
-  //     {
-  //       urls: 'stun:stun4.l.google.com:19302',
-  //     },
-  //     {
-  //       urls: 'turn:211.119.132.242:3478?transport=tcp',
-  //       credential: 'test123',
-  //       username: 'test'
-  //     },
-  //     {
-  //       urls: 'turn:211.119.132.242:3478?transport=udp',
-  //       credential: 'test123',
-  //       username: 'test'
-  //     }
-  //   ]
-  // });
+ 
 
 
   const myPeerConnection = new RTCPeerConnection({
@@ -374,3 +349,63 @@ function handleIce(data) {
   socket.emit("ice", data.candidate, roomName);
 }
 
+
+// mic volume contorol
+function changeMicrophoneLevel(value) {
+    if(value && value >= 0 && value <= 2) {
+        gainNode.gain.value = value;
+    }
+}
+let gainNode;
+
+function gotStream(stream) {
+
+  // Get the videoTracks from the stream.
+  const videoTracks = stream.getVideoTracks();
+
+  /**
+   * Create a new audio context and build a stream source,
+   * stream destination and a gain node. Pass the stream into 
+   * the mediaStreamSource so we can use it in the Web Audio API.
+   */
+  const context = new AudioContext();
+  const mediaStreamSource = context.createMediaStreamSource(stream);
+  const mediaStreamDestination = context.createMediaStreamDestination();
+  gainNode = context.createGain();
+  gainNode.gain.value = 1.0;
+  /**
+   * Connect the stream to the gainNode so that all audio
+   * passes through the gain and can be controlled by it.
+   * Then pass the stream from the gain to the mediaStreamDestination
+   * which can pass it back to the RTC client.
+   */
+  mediaStreamSource.connect(gainNode);
+  gainNode.connect(mediaStreamDestination);
+
+  /**
+   * Change the gain levels on the input selector.
+   */
+  // inputLevelSelector.addEventListener('input', event => {
+  //   gainNode.gain.value = event.target.value;
+  // });
+
+  /**
+   * The mediaStreamDestination.stream outputs a MediaStream object
+   * containing a single AudioMediaStreamTrack. Add the video track
+   * to the new stream to rejoin the video with the controlled audio.
+   */
+  const controlledStream = mediaStreamDestination.stream;
+  for (const videoTrack of videoTracks) {
+    controlledStream.addTrack(videoTrack);
+  }
+
+  /**
+   * Use the stream that went through the gainNode. This
+   * is the same stream but with altered input volume levels.
+   */
+  // localVideo.srcObject = controlledStream;
+  myStream = controlledStream;
+  // peerConnection.addStream(controlledStream);
+  // callButton.disabled = false;
+
+}
