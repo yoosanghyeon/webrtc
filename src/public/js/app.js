@@ -63,9 +63,6 @@ async function getMedia(deviceId) {
   }
   
 
-
-
-
   if(myStream){
     myStream.getTracks().forEach(track => {
       track.stop();
@@ -86,16 +83,12 @@ async function getMedia(deviceId) {
     );
 
 
-
-
-   
-
     if(isMic){
 
       gotStream(myStream);
-      myFace.srcObject = myStream;
+
     }
-    
+    myFace.srcObject = myStream;    
     if (!deviceId) {
       await getCameras();
     }
@@ -158,7 +151,7 @@ micGain.addEventListener("input", (event) =>{
   gainValue.innerText = micGain.value;
   
 })
-// Welcome Form (join a room)
+
 
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("form");
@@ -187,6 +180,7 @@ socket.on("welcome", async (users, socketId) => {
   mySocketId = socketId;
 
   users.forEach(async (user) =>{
+   
     const myPeerConnection = await makeConnection(user.id);
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
@@ -199,8 +193,10 @@ socket.on("welcome", async (users, socketId) => {
 socket.on("offer", async (offer, offerSendId) => {
 
   try {
+ 
+    console.log("offsend  id : " , offerSendId);
 
-    if(myPeerConnections[offerSendId]) return
+    if(myPeerConnections[offerSendId]) return;
     const myPeerConnection = await makeConnection(offerSendId)
     myPeerConnection.addEventListener("datachannel", (event) => {
       myDataChannel = event.channel;
@@ -216,7 +212,7 @@ socket.on("offer", async (offer, offerSendId) => {
     socket.emit("answer", answer, offerSendId, mySocketId);
     console.log("sent the answer");
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 
 });
@@ -231,7 +227,7 @@ socket.on("answer", (answer, socketId) => {
 
 socket.on("ice", (ice, socketId) => {
   console.log("received candidate", socketId);
-  
+
   const myPeerConnection = myPeerConnections[socketId];
   if(!myPeerConnection) return
   myPeerConnection.addIceCandidate(ice);
@@ -271,7 +267,10 @@ socket.on("connect_error", (error) => {
 
 async function makeConnection(socketId) {
  
-
+  console.log("makeConnection");
+  if(myPeerConnections[socketId]){
+    return
+  }
 
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
@@ -289,9 +288,13 @@ async function makeConnection(socketId) {
 
   // 구세대 브라우저의 간의 api 변경으로 인한 분기
   if(myPeerConnection.addTrack !== undefined){
+
     // otherVideoArray
     myPeerConnection.addEventListener("track", (data) => {
-    
+
+      console.log(myPeerConnections);
+      if(otherVideoViews[socketId]) return;
+      
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
@@ -303,8 +306,10 @@ async function makeConnection(socketId) {
       console.log(peerFace);
     });
   }else{
+    
     myPeerConnection.addEventListener("addstream", (data) => {
 
+       if(otherVideoViews[socketId]) return;
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
@@ -409,3 +414,4 @@ function gotStream(stream) {
   // callButton.disabled = false;
 
 }
+
