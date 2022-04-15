@@ -83,14 +83,14 @@ async function getMedia(deviceId) {
     );
 
 
-    if(isMic){
-
-      gotStream(myStream);
-
-    }
+  
     myFace.srcObject = myStream;    
     if (!deviceId) {
       await getCameras();
+      if(isMic){
+        gotStream(myStream);
+  
+      }
     }
     
   } catch (e) {
@@ -137,6 +137,7 @@ async function handleCameraChange() {
         .find((sender) => sender.track.kind === "video");
       videoSender.replaceTrack(videoTrack);
 
+      // TODO : AUDIO Track 바뀌는지 확인
       const audioTrack = myStream.getAudioTracks()[0];
       const audioSender = myPeerConnection
       .getSenders()
