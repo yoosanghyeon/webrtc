@@ -25,6 +25,7 @@ let myDataChannel;
 
 
 async function getCameras() {
+
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const cameras = devices.filter((device) => device.kind === "videoinput");
@@ -42,6 +43,7 @@ async function getCameras() {
     console.log(e);
     alert(e)
   }
+
 }
 
 
@@ -137,7 +139,6 @@ function handleMuteClick() {
 
 function handleCameraClick() {
 
-
   myStream
     .getVideoTracks()
     .forEach((track) => (track.enabled = !track.enabled));
@@ -159,25 +160,14 @@ async function handleCameraChange() {
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
-    // const videoTrack = myStream.getVideoTracks()[0];
-
-    //   const videoSender = myPeerConnection
-    //     .getSenders()
-    //     .find((sender) => sender.track.kind === "video");
-    //   videoSender.replaceTrack(videoTrack);
-
 
     try{
-      let videoTrack = myStream.getVideoTracks()[0];
 
+      let videoTrack = myStream.getVideoTracks()[0];
       var sender = myPeerConnection.getSenders().find(function(s) {
         return s.track.kind == videoTrack.kind;
       });
-      var audioSender = myPeerConnection.getSenders().find(function(s) {
-        return s.track.kind == "audio";
-      });
-      console.log('vidio sender:', sender);
-      console.log('audio sender:', audioSender);
+
       sender.replaceTrack(videoTrack);
 
     }catch(e){
@@ -200,7 +190,7 @@ micGain.addEventListener("input", (event) =>{
   changeMicrophoneLevel(micGain.value);
   gainValue.innerText = micGain.value;
   
-})
+});
 
 
 const welcome = document.getElementById("welcome");
@@ -301,7 +291,6 @@ socket.on("userDisconnect", (socketId) => {
     otherVideos.removeChild(otherVideoViews[socketId]);
     delete otherVideoViews[socketId]
     delete myPeerConnections[socketId]
-    
     console.log(otherVideoViews);
     console.log(myPeerConnections)
   }
@@ -343,33 +332,14 @@ async function makeConnection(socketId) {
     myPeerConnection.addEventListener("track", (data) => {
 
       console.log(myPeerConnections);
-      if(otherVideoViews[socketId]) return;
-      
-      const peerFace = document.createElement("video");
-      peerFace.setAttribute("autoplay", "");
-      peerFace.setAttribute("playsinline", "");
-      peerFace.srcObject = data.streams[0];
-      peerFace.style.width = "50%";
-      peerFace.controls = true;
-      otherVideos.append(peerFace);
-      otherVideoViews[socketId] = peerFace;
-      console.log(peerFace);
+      addOtherVideoData(socketId, data.streams[0]);
+
     });
   }else{
     
     myPeerConnection.addEventListener("addstream", (data) => {
 
-       if(otherVideoViews[socketId]) return;
-      const peerFace = document.createElement("video");
-      peerFace.setAttribute("autoplay", "");
-      peerFace.setAttribute("playsinline", "");
-      peerFace.srcObject = data.stream;
-      peerFace.autoplay = true;
-      peerFace.style.width = "50%";
-      peerFace.controls = true;
-      otherVideos.append(peerFace);
-      otherVideoViews[socketId] = peerFace;
-      console.log(peerFace);
+      addOtherVideoData(socketId, data.stream);
     });
   }
   
@@ -402,6 +372,27 @@ async function makeConnection(socketId) {
 function handleIce(data) {
   console.log("sent candidate");
   socket.emit("ice", data.candidate, roomName);
+}
+
+// add Other PeerConnection 
+// width: 240px;
+// height: 240px;
+// max-width: 400;
+
+function addOtherVideoData(socketId, dataStream){
+  if(otherVideoViews[socketId]) return;
+  const peerFace = document.createElement("video");
+  peerFace.setAttribute("autoplay", "");
+  peerFace.setAttribute("playsinline", "");
+  peerFace.srcObject = dataStream;
+  peerFace.autoplay = true;
+  peerFace.style.width = "240px";
+  peerFace.style.height = "240px";
+  peerFace.style.maxWidth = "400px";
+  peerFace.controls = true;
+  otherVideos.append(peerFace);
+  otherVideoViews[socketId] = peerFace;
+  console.log(peerFace);
 }
 
 
