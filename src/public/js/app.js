@@ -68,9 +68,12 @@ async function getMedia(deviceId) {
 
   if(myStream){
     // TODO : readState -> audio 까지 서버림
-    // myStream.getTracks().forEach(track => {
-    //   track.stop();
-    // });
+    myStream.getTracks().forEach(track => {
+      // track.stop();
+      if(track.kind == "video"){
+        track.stop();
+      }
+    });
   }
 
   const initialConstrains = {
@@ -91,9 +94,10 @@ async function getMedia(deviceId) {
       
     if (!deviceId) {
       await getCameras();
+     
+    }else{
       if(isMic){
         gotStream(myStream);
-  
       }
     }
     
