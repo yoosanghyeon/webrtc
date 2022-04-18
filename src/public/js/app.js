@@ -6,6 +6,7 @@ const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
 const otherVideos = document.getElementById("otherVideos");
+const micMenu = document.getElementById("micMenu");
 const micGain = document.getElementById("micGain");
 const gainValue = document.getElementById("gainValue");
 
@@ -55,11 +56,13 @@ async function getMedia(deviceId) {
   // 마이크 체크 
   var isMic = false;
   muteBtn.hidden = true;
+  micMenu.hidden = true;
   const micDevices = devices.filter((device) => device.kind === "audioinput");
  
   if(micDevices.length > 0){
     isMic = true;
     muteBtn.hidden = false;
+    micMenu.hidden = false;
   }
   
 

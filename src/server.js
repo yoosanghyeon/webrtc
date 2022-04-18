@@ -9,6 +9,7 @@ const fs = require("fs")
 const app = express();
 
 
+
 const port = 2000;
 
 app.set("view engine", "pug");
@@ -30,7 +31,6 @@ app.get(() =>{
 
 })
 app.get("/*", (_, res) => res.redirect("/"));
-
 
 
 
