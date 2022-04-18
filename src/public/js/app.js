@@ -69,7 +69,7 @@ async function getMedia(deviceId) {
   if(myStream){
     // TODO : readState -> audio 까지 서버림
     myStream.getTracks().forEach(track => {
-      // track.stop();
+
       if(track.kind == "video"){
         track.stop();
       }
@@ -100,11 +100,21 @@ async function getMedia(deviceId) {
         gotStream(myStream);
       }
     }
+
+    onMutued()
     
     myFace.srcObject = myStream; 
   } catch (e) {
     console.log(e);
   }
+}
+
+// temp sample code 
+function onMutued(){
+  muted = true;
+  myStream
+  .getAudioTracks()
+  .forEach((track) => (track.enabled = false));
 }
 
 function handleMuteClick() {
@@ -121,6 +131,8 @@ function handleMuteClick() {
 }
 
 function handleCameraClick() {
+
+
   myStream
     .getVideoTracks()
     .forEach((track) => (track.enabled = !track.enabled));
@@ -131,6 +143,8 @@ function handleCameraClick() {
     cameraBtn.innerText = "Turn Camera On";
     cameraOff = true;
   }
+
+  onMutued();
 }
 
 async function handleCameraChange() {
