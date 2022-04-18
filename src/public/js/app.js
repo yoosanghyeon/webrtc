@@ -89,19 +89,18 @@ async function getMedia(deviceId) {
       deviceId ? cameraConstraints : initialConstrains
     );
 
-
+    // mic 볼륨 조절
+    if(isMic){
+      gotStream(myStream);
+    }
   
       
     if (!deviceId) {
       await getCameras();
      
-    }else{
-      if(isMic){
-        gotStream(myStream);
-      }
     }
 
-    onMutued()
+    onMutued();
     
     myFace.srcObject = myStream; 
   } catch (e) {
