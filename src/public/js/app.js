@@ -22,8 +22,6 @@ let myPeerConnections = {};
 let otherVideoViews = {};
 let myDataChannel;
 
-
-
 async function getCameras() {
 
   try {
@@ -52,7 +50,7 @@ async function getCameras() {
 
 async function getMedia(deviceId) {
   
-
+  getCodecs();
   const devices = await navigator.mediaDevices.enumerateDevices();
   
   // 마이크 체크 
@@ -104,7 +102,6 @@ async function getMedia(deviceId) {
       
     if (!deviceId) {
       await getCameras();
-     
     }
 
     onMutued();
@@ -273,15 +270,8 @@ socket.on("ice", (ice, socketId) => {
   myPeerConnection.addIceCandidate(ice);
 
 
-  // const {codecs} = RTCRtpSender.getCapabilities('video');
 
-  // codecs.forEach((codec) =>{
-  //   console.log(codec)
-  // })
-  // let preferCodes = codecs.slice(6, 7);
-  // console.log(preferCodes);
-  // myPeerConnection.getTransceivers()[0].setCodecPreferences(preferCodes);
-  // console.log()
+
 });
 
 socket.on("userDisconnect", (socketId) => {
@@ -310,6 +300,7 @@ async function makeConnection(socketId) {
   if(myPeerConnections[socketId]){
     return
   }
+
 
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
@@ -344,9 +335,11 @@ async function makeConnection(socketId) {
   }
   
   // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 ) 
-  myPeerConnection.onconnectionstatechange = (e) =>{
-    console.log(e)
-  }
+  myPeerConnection.addEventListener("onconnectionstatechange", (e) =>{
+    console.log(e);
+  })
+    
+  
   myStream
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
@@ -373,11 +366,6 @@ function handleIce(data) {
   console.log("sent candidate");
   socket.emit("ice", data.candidate, roomName);
 }
-
-// add Other PeerConnection 
-// width: 240px;
-// height: 240px;
-// max-width: 400;
 
 function addOtherVideoData(socketId, dataStream){
   if(otherVideoViews[socketId]) return;
@@ -456,3 +444,16 @@ function gotStream(stream) {
 
 }
 
+function getCodecs(){
+
+  // FireFox 지원 안함
+  if(RTCRtpSender.getCapabilities !== undefined){
+    let capabilities = RTCRtpSender.getCapabilities("video");
+
+    capabilities.codecs.forEach((codec) =>{
+      console.log("codec :: ", codec)
+    })
+  
+  }
+  
+}

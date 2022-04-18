@@ -27,9 +27,7 @@ app.get("/", (_, res) => {
 app.get("/count", (req, res) => {
   res.send(users);
 });
-app.get(() =>{
 
-})
 app.get("/*", (_, res) => res.redirect("/"));
 
 
