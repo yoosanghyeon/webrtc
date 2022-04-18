@@ -63,6 +63,11 @@ async function getMedia(deviceId) {
     isMic = true;
     muteBtn.hidden = false;
     micMenu.hidden = false;
+   
+    micDevices.forEach((micDevice) => {
+      alert(micDevice.label);
+      console.log(micDevice);
+    })
   }
   
 
