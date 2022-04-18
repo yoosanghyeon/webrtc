@@ -87,7 +87,7 @@ async function getMedia(deviceId) {
 
 
   
-    myFace.srcObject = myStream;    
+      
     if (!deviceId) {
       await getCameras();
       if(isMic){
@@ -96,6 +96,7 @@ async function getMedia(deviceId) {
       }
     }
     
+    myFace.srcObject = myStream; 
   } catch (e) {
     console.log(e);
   }
@@ -131,6 +132,7 @@ async function handleCameraChange() {
   
   await getMedia(camerasSelect.value);
 
+   // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
     const videoTrack = myStream.getVideoTracks()[0];
@@ -140,12 +142,12 @@ async function handleCameraChange() {
         .find((sender) => sender.track.kind === "video");
       videoSender.replaceTrack(videoTrack);
 
-      // TODO : AUDIO Track 바뀌는지 확인
-      const audioTrack = myStream.getAudioTracks()[0];
-      const audioSender = myPeerConnection
-      .getSenders()
-      .find((sender) => sender.track.kind === "audio");
-      audioSender.replaceTrack(audioTrack);
+     
+      // const audioTrack = myStream.getAudioTracks()[0];
+      // const audioSender = myPeerConnection
+      // .getSenders()
+      // .find((sender) => sender.track.kind === "audio");
+      // audioSender.replaceTrack(audioTrack);
   }
 
 }
