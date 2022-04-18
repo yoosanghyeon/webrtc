@@ -67,9 +67,10 @@ async function getMedia(deviceId) {
   
 
   if(myStream){
-    myStream.getTracks().forEach(track => {
-      track.stop();
-    });
+    // TODO : readState -> audio 까지 서버림
+    // myStream.getTracks().forEach(track => {
+    //   track.stop();
+    // });
   }
 
   const initialConstrains = {
@@ -135,19 +136,32 @@ async function handleCameraChange() {
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
-    const videoTrack = myStream.getVideoTracks()[0];
+    // const videoTrack = myStream.getVideoTracks()[0];
 
-      const videoSender = myPeerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video");
-      videoSender.replaceTrack(videoTrack);
+    //   const videoSender = myPeerConnection
+    //     .getSenders()
+    //     .find((sender) => sender.track.kind === "video");
+    //   videoSender.replaceTrack(videoTrack);
 
-     
-      // const audioTrack = myStream.getAudioTracks()[0];
-      // const audioSender = myPeerConnection
-      // .getSenders()
-      // .find((sender) => sender.track.kind === "audio");
-      // audioSender.replaceTrack(audioTrack);
+
+    try{
+      let videoTrack = myStream.getVideoTracks()[0];
+
+      var sender = myPeerConnection.getSenders().find(function(s) {
+        return s.track.kind == videoTrack.kind;
+      });
+      var audioSender = myPeerConnection.getSenders().find(function(s) {
+        return s.track.kind == "audio";
+      });
+      console.log('vidio sender:', sender);
+      console.log('audio sender:', audioSender);
+      sender.replaceTrack(videoTrack);
+
+    }catch(e){
+      console.log( "switch camera error : ", e);
+    }
+    
+
   }
 
 }
@@ -345,7 +359,7 @@ async function makeConnection(socketId) {
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
 
   myDataChannel = myPeerConnection.createDataChannel("chat");
-    myDataChannel.addEventListener("message", (event) => console.log(event.data));
+  myDataChannel.addEventListener("message", (event) => console.log(event.data));
   console.log("made data channel");
 
   // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/restartIce
