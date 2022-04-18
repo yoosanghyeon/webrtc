@@ -65,9 +65,9 @@ async function getMedia(deviceId) {
     micMenu.hidden = false;
    
     micDevices.forEach((micDevice) => {
-      alert(micDevice.label);
       console.log(micDevice);
-    })
+    });
+    
   }
   
 
@@ -348,9 +348,9 @@ async function makeConnection(socketId) {
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
-      // peerFace.setAttribute("controls", "");
       peerFace.srcObject = data.streams[0];
-      peerFace.style.width = 50%
+      peerFace.style.width = "50%";
+      peerFace.controls = true;
       otherVideos.append(peerFace);
       otherVideoViews[socketId] = peerFace;
       console.log(peerFace);
@@ -363,10 +363,10 @@ async function makeConnection(socketId) {
       const peerFace = document.createElement("video");
       peerFace.setAttribute("autoplay", "");
       peerFace.setAttribute("playsinline", "");
-      // peerFace.setAttribute("controls", "");
       peerFace.srcObject = data.stream;
       peerFace.autoplay = true;
-      peerFace.style.width = 50%
+      peerFace.style.width = "50%";
+      peerFace.controls = true;
       otherVideos.append(peerFace);
       otherVideoViews[socketId] = peerFace;
       console.log(peerFace);
