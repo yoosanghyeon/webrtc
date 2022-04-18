@@ -112,6 +112,7 @@ async function getMedia(deviceId) {
 // temp sample code 
 function onMutued(){
   muted = true;
+  muteBtn.innerText = "Unmute";
   myStream
   .getAudioTracks()
   .forEach((track) => (track.enabled = false));
