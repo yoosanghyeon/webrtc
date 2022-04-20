@@ -6,7 +6,6 @@ const cameraBtn = document.getElementById("camera");
 const camerasSelect = document.getElementById("cameras");
 const call = document.getElementById("call");
 const otherVideos = document.getElementById("otherVideos");
-const micMenu = document.getElementById("micMenu");
 const micGain = document.getElementById("micGain");
 const gainValue = document.getElementById("gainValue");
 
@@ -22,8 +21,9 @@ let myPeerConnections = {};
 let otherVideoViews = {};
 let myDataChannel;
 
-async function getCameras() {
 
+
+async function getCameras() {
   try {
     const devices = await navigator.mediaDevices.enumerateDevices();
     const cameras = devices.filter((device) => device.kind === "videoinput");
@@ -41,7 +41,6 @@ async function getCameras() {
     console.log(e);
     alert(e)
   }
-
 }
 
 
@@ -50,34 +49,22 @@ async function getCameras() {
 
 async function getMedia(deviceId) {
   
-  getCodecs();
   const devices = await navigator.mediaDevices.enumerateDevices();
   
   // 마이크 체크 
   var isMic = false;
   muteBtn.hidden = true;
-  micMenu.hidden = true;
   const micDevices = devices.filter((device) => device.kind === "audioinput");
  
   if(micDevices.length > 0){
     isMic = true;
     muteBtn.hidden = false;
-    micMenu.hidden = false;
-   
-    micDevices.forEach((micDevice) => {
-      console.log(micDevice);
-    });
-    
   }
   
 
   if(myStream){
-    // TODO : readState -> audio 까지 서버림
     myStream.getTracks().forEach(track => {
-
-      if(track.kind == "video"){
-        track.stop();
-      }
+      track.stop();
     });
   }
 
@@ -94,31 +81,20 @@ async function getMedia(deviceId) {
       deviceId ? cameraConstraints : initialConstrains
     );
 
-    // mic 볼륨 조절
-    if(isMic){
-      gotStream(myStream);
-    }
+
   
-      
+    myFace.srcObject = myStream;    
     if (!deviceId) {
       await getCameras();
+      if(isMic){
+        gotStream(myStream);
+  
+      }
     }
-
-    onMutued();
     
-    myFace.srcObject = myStream; 
   } catch (e) {
     console.log(e);
   }
-}
-
-// temp sample code 
-function onMutued(){
-  muted = true;
-  muteBtn.innerText = "Unmute";
-  myStream
-  .getAudioTracks()
-  .forEach((track) => (track.enabled = false));
 }
 
 function handleMuteClick() {
@@ -135,7 +111,6 @@ function handleMuteClick() {
 }
 
 function handleCameraClick() {
-
   myStream
     .getVideoTracks()
     .forEach((track) => (track.enabled = !track.enabled));
@@ -146,32 +121,27 @@ function handleCameraClick() {
     cameraBtn.innerText = "Turn Camera On";
     cameraOff = true;
   }
-
-  onMutued();
 }
 
 async function handleCameraChange() {
   
   await getMedia(camerasSelect.value);
 
-   // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
+    const videoTrack = myStream.getVideoTracks()[0];
 
-    try{
+      const videoSender = myPeerConnection
+        .getSenders()
+        .find((sender) => sender.track.kind === "video");
+      videoSender.replaceTrack(videoTrack);
 
-      let videoTrack = myStream.getVideoTracks()[0];
-      var sender = myPeerConnection.getSenders().find(function(s) {
-        return s.track.kind == videoTrack.kind;
-      });
-
-      sender.replaceTrack(videoTrack);
-
-    }catch(e){
-      console.log( "switch camera error : ", e);
-    }
-    
-
+      // TODO : AUDIO Track 바뀌는지 확인
+      const audioTrack = myStream.getAudioTracks()[0];
+      const audioSender = myPeerConnection
+      .getSenders()
+      .find((sender) => sender.track.kind === "audio");
+      audioSender.replaceTrack(audioTrack);
   }
 
 }
@@ -187,7 +157,7 @@ micGain.addEventListener("input", (event) =>{
   changeMicrophoneLevel(micGain.value);
   gainValue.innerText = micGain.value;
   
-});
+})
 
 
 const welcome = document.getElementById("welcome");
@@ -269,9 +239,6 @@ socket.on("ice", (ice, socketId) => {
   if(!myPeerConnection) return
   myPeerConnection.addIceCandidate(ice);
 
-
-
-
 });
 
 socket.on("userDisconnect", (socketId) => {
@@ -281,6 +248,7 @@ socket.on("userDisconnect", (socketId) => {
     otherVideos.removeChild(otherVideoViews[socketId]);
     delete otherVideoViews[socketId]
     delete myPeerConnections[socketId]
+    
     console.log(otherVideoViews);
     console.log(myPeerConnections)
   }
@@ -301,7 +269,7 @@ async function makeConnection(socketId) {
     return
   }
 
-
+  
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
@@ -323,29 +291,46 @@ async function makeConnection(socketId) {
     myPeerConnection.addEventListener("track", (data) => {
 
       console.log(myPeerConnections);
-      addOtherVideoData(socketId, data.streams[0]);
-
+      if(otherVideoViews[socketId]) return;
+      
+      const peerFace = document.createElement("video");
+      peerFace.setAttribute("autoplay", "");
+      peerFace.setAttribute("playsinline", "");
+      // peerFace.setAttribute("controls", "");
+      peerFace.srcObject = data.streams[0];
+      peerFace.style.width = 50%
+      otherVideos.append(peerFace);
+      otherVideoViews[socketId] = peerFace;
+      console.log(peerFace);
     });
   }else{
     
     myPeerConnection.addEventListener("addstream", (data) => {
 
-      addOtherVideoData(socketId, data.stream);
+       if(otherVideoViews[socketId]) return;
+      const peerFace = document.createElement("video");
+      peerFace.setAttribute("autoplay", "");
+      peerFace.setAttribute("playsinline", "");
+      // peerFace.setAttribute("controls", "");
+      peerFace.srcObject = data.stream;
+      peerFace.autoplay = true;
+      peerFace.style.width = 50%
+      otherVideos.append(peerFace);
+      otherVideoViews[socketId] = peerFace;
+      console.log(peerFace);
     });
   }
   
   // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 ) 
-  myPeerConnection.addEventListener("onconnectionstatechange", (e) =>{
-    console.log(e);
-  })
-    
-  
+  myPeerConnection.onconnectionstatechange = (e) =>{
+    console.log(e)
+  }
   myStream
     .getTracks()
     .forEach((track) => myPeerConnection.addTrack(track, myStream));
 
   myDataChannel = myPeerConnection.createDataChannel("chat");
-  myDataChannel.addEventListener("message", (event) => console.log(event.data));
+    myDataChannel.addEventListener("message", (event) => console.log(event.data));
   console.log("made data channel");
 
   // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/restartIce
@@ -365,22 +350,6 @@ async function makeConnection(socketId) {
 function handleIce(data) {
   console.log("sent candidate");
   socket.emit("ice", data.candidate, roomName);
-}
-
-function addOtherVideoData(socketId, dataStream){
-  if(otherVideoViews[socketId]) return;
-  const peerFace = document.createElement("video");
-  peerFace.setAttribute("autoplay", "");
-  peerFace.setAttribute("playsinline", "");
-  peerFace.srcObject = dataStream;
-  peerFace.autoplay = true;
-  peerFace.style.width = "240px";
-  peerFace.style.height = "240px";
-  peerFace.style.maxWidth = "400px";
-  peerFace.controls = true;
-  otherVideos.append(peerFace);
-  otherVideoViews[socketId] = peerFace;
-  console.log(peerFace);
 }
 
 
@@ -444,16 +413,3 @@ function gotStream(stream) {
 
 }
 
-function getCodecs(){
-
-  // FireFox 지원 안함
-  if(RTCRtpSender.getCapabilities !== undefined){
-    let capabilities = RTCRtpSender.getCapabilities("video");
-
-    capabilities.codecs.forEach((codec) =>{
-      console.log("codec :: ", codec)
-    })
-  
-  }
-  
-}
