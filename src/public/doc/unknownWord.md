@@ -38,3 +38,6 @@ WEBRTC 이해하기 학습
    Interactive Connectivity Establishment (ICE)는 브라우저가 Peer를 통한 연결이 가능하도록 하게 해 주는 프레임워크입니다. Peer A ➡️ Peer B까지 단순하게 연결하는 것으로는 작동하지 않는 것에 대한 이유는 많이 있습니다.
    연결을 시도하는 방화벽을 통과 해야하기도 하고, 단말에 Public IP가 없다면 유일한 주소 값을 할당해야할 필요도 있으며 라우터가 Peer 간의 직접 연결을 허용하지 않을 때에는 데이터를 릴레이 해야할 경우도 있습니다.
    ICE는 이러한 작업을 수행하기 위해서 위해서 설명하였던 STUN, TURN Server 두개 다 혹은 하나의 서버를 사용합니다.
+
+13. WebRTC 관련 설명 잘되어 있는곳 
+    https://42place.innovationacademy.kr/archives/8385

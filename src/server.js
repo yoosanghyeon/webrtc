@@ -54,9 +54,6 @@ wsServer.on("connection", (socket) => {
     }
  
     const usersInThisRoom = users[roomName].filter(user => user.id !== socket.id);
-    // console.log(users[roomName])
-    // console.log(usersInThisRoom);
-    
     wsServer.sockets.to(socket.id).emit("welcome", usersInThisRoom, socket.id);
 
   });
@@ -65,11 +62,9 @@ wsServer.on("connection", (socket) => {
     wsServer.sockets.to(offerRecivedId).emit("offer", offer, offerSendId);
   });
   socket.on("answer", (answer, offerSendId, mySocketId) => {
-    // socket.to(roomName).emit("answer", answer, socket.id);
     wsServer.sockets.to(offerSendId).emit("answer", answer, mySocketId);
   });
   socket.on("ice", (ice, candidateSendID, candidateReceiveID) => {
-    // socket.to(roomName).emit("ice", ice, socket.id);
     wsServer.sockets.to(candidateReceiveID).emit("ice", ice, candidateSendID);
   });
 
@@ -104,30 +99,6 @@ wsServer.on("connection", (socket) => {
   })
 });
 
-// app.set("view engine", "pug");
-// app.set("views", __dirname + "/views");
-// app.use("/public", express.static(__dirname + "/public"));
-// app.get("/", (_, res) => res.render("webSocketHome"));
-// app.get("/*", (_, res) => res.redirect("/"));
-
-// const httpServer = http.createServer(app);
-// const wsServer = SocketIO(httpServer);
-
-// wsServer.on("connection", (socket) => {
-//   socket.on("join_room", (roomName) => {
-//     socket.join(roomName);
-//     socket.to(roomName).emit("welcome");
-//   });
-//   socket.on("offer", (offer, roomName) => {
-//     socket.to(roomName).emit("offer", offer);
-//   });
-//   socket.on("answer", (answer, roomName) => {
-//     socket.to(roomName).emit("answer", answer);
-//   });
-//   socket.on("ice", (ice, roomName) => {
-//     socket.to(roomName).emit("ice", ice);
-//   });
-// });
 
 
 const handleListen = () => console.log(`Listening on http://localhost:${port}`);
