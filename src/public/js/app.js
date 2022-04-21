@@ -291,8 +291,6 @@ socket.on("userDisconnect", (socketId) => {
     delete myPeerConnections[socketId]
     console.log(otherVideoViews);
     console.log(myPeerConnections)
-
-  
   }
 
  

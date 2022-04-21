@@ -24,6 +24,8 @@
 #muteMenu{
     display: flex;
     justify-content: center;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 #whitespace{
@@ -61,12 +63,10 @@ video{
 }
 
 
-#mute, #camera{
-    width: 20%;
-}
 
 #cameras{
-    width: 50%;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .inner_center{
     margin-left: auto;
@@ -109,4 +109,9 @@ main{
 html, body {
     max-width: 100%;
     overflow-x: hidden;
+}
+
+#roomInput{
+    margin-left: 5%;
+    margin-right: 5%;
 }
