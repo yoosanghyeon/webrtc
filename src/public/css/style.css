@@ -4,8 +4,9 @@
 }
 
 #myFace{
-    width: 240px;
-    height: 240px;
+    display: inline-block !important;
+    width: 120px;
+    height: 120px;
     max-width: 400;
 }
 
@@ -36,15 +37,27 @@
 
 
 #otherVideos{
-    text-align: center;
+    overflow: auto;
+    white-space: nowrap;
 }
 
 video{
-    display: block;
+    display: inline-block !important;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+    width: 120px;
+    height: 120px;
+    max-width: 400 !important;
+}
+
+#otherFace{
+    width: 50%;
     margin-left: auto;
     margin-right: auto;
-    width: 240px;
-    height: 240px;
+    width: 70%;
+    height: auto;
 }
 
 
@@ -81,6 +94,16 @@ video{
 
 h1{
     text-align: center;
+    margin-bottom: auto !important;
+}
+
+header{
+    padding: 2 !important;
+    margin-bottom: auto !important;
+}
+
+main{
+    padding: 0 !important;
 }
 
 html, body {
