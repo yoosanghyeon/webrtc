@@ -10,6 +10,8 @@ const micMenu = document.getElementById("micMenu");
 const micGain = document.getElementById("micGain");
 const gainValue = document.getElementById("gainValue");
 const otherFace = document.getElementById("otherFace");
+const outerTitle = document.getElementById("outerTitle");
+const roomTitle = document.getElementById("roomTitle");
 
 call.hidden = true;
 
@@ -179,7 +181,9 @@ async function handleCameraChange() {
 }
 
 
-
+myFace.addEventListener("click", () =>{
+  otherFace.srcObject = myFace.srcObject;
+});
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
@@ -204,6 +208,8 @@ async function initCall(socketId) {
 
 async function handleWelcomeSubmit(event) {
   event.preventDefault();
+  outerTitle.hidden = true;
+  roomTitle.hidden = false;
   const input = welcomeForm.querySelector("input");
   await initCall();
   socket.emit("join_room", input.value);

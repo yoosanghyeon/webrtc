@@ -18,7 +18,7 @@
 #peerFace{
     width: 240px;
     height: 240px;
-    max-width: 400;
+    max-width: 400px;
 }
 
 #muteMenu{
@@ -55,10 +55,9 @@ video{
 }
 
 #otherFace{
-    width: 50%;
+    width: 55%;
     margin-left: auto;
     margin-right: auto;
-    width: 70%;
     height: auto;
 }
 
@@ -94,11 +93,16 @@ video{
 
 h1{
     text-align: center;
+    padding: 25px;
+}
+
+h2{
+    text-align: center;
     margin-bottom: auto !important;
 }
 
 header{
-    padding: 2 !important;
+    padding: 0 !important;
     margin-bottom: auto !important;
 }
 
