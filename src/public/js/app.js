@@ -92,16 +92,17 @@ async function getMedia(deviceId) {
   const initialConstrains = {
     audio: isMic,
     video: {
-       facingMode: "user" 
-    },
-    width : {
-      min : 240,
-      max : 240
-    },
-    height : {
-      min : 240,
-      max : 240
+       facingMode: "user",
+       width : {
+        min : 240,
+        max : 240
+      },
+      height : {
+        min : 240,
+        max : 240
+      } 
     }
+  
   };
   const cameraConstraints = {
     audio: isMic,
@@ -115,7 +116,7 @@ async function getMedia(deviceId) {
         min : 240,
         max : 240
       }
-     },
+    }
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
