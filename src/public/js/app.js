@@ -12,7 +12,8 @@ const gainValue = document.getElementById("gainValue");
 const otherFace = document.getElementById("otherFace");
 const outerTitle = document.getElementById("outerTitle");
 const roomTitle = document.getElementById("roomTitle");
-const videocodecs = document.getElementById("videocodecs")
+const changeCodecsMenu = document.getElementById("changeCodecsMenu");
+const videoCodecsSelects = document.getElementById("videoCodecsSelects");
 
 call.hidden = true;
 
@@ -90,11 +91,31 @@ async function getMedia(deviceId) {
 
   const initialConstrains = {
     audio: isMic,
-    video: { facingMode: "user" },
+    video: {
+       facingMode: "user" 
+    },
+    width : {
+      min : 240,
+      max : 400
+    },
+    height : {
+      min : 240,
+      max : 400
+    }
   };
   const cameraConstraints = {
     audio: isMic,
-    video: { deviceId: { exact: deviceId } },
+    video: { 
+      deviceId: { exact: deviceId },
+      width : {
+        min : 240,
+        max : 400
+      },
+      height : {
+        min : 240,
+        max : 400
+      }
+     },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
@@ -192,6 +213,7 @@ myFace.addEventListener("click", () =>{
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
 camerasSelect.addEventListener("input", handleCameraChange);
+videoCodecsSelects.addEventListener("input", handleCodecsChange);
 micGain.addEventListener("input", (event) =>{
   
   changeMicrophoneLevel(micGain.value);
@@ -402,13 +424,14 @@ function addOtherVideoData(socketId, dataStream){
 }
 
 
+let gainNode;
 // mic volume contorol
 function changeMicrophoneLevel(value) {
     if(value && value >= 0 && value <= 2) {
         gainNode.gain.value = value;
     }
 }
-let gainNode;
+
 
 function gotStream(stream) {
 
@@ -477,12 +500,19 @@ function getCodecs(){
       option.value = (codec.mimeType + ' ' + (codec.sdpFmtpLine || '')).trim();
       option.innerText = option.value;
    
-      videocodecs.appendChild(option);
+      videoCodecsSelects.appendChild(option);
     })
   
   }else{
-    videocodecs.hidden = true;
-    videocodecs.disable = true;
+    changeCodecsMenu.hidden = true;
+    videoCodecsSelects.hidden = true;
+    videoCodecsSelects.disabled = true;
   }
   
+}
+
+async function handleCodecsChange() {
+  
+  console.log(videoCodecsSelects.value);
+
 }
