@@ -96,11 +96,11 @@ async function getMedia(deviceId) {
     },
     width : {
       min : 240,
-      max : 400
+      max : 240
     },
     height : {
       min : 240,
-      max : 400
+      max : 240
     }
   };
   const cameraConstraints = {
@@ -109,11 +109,11 @@ async function getMedia(deviceId) {
       deviceId: { exact: deviceId },
       width : {
         min : 240,
-        max : 400
+        max : 240
       },
       height : {
         min : 240,
-        max : 400
+        max : 240
       }
      },
   };
