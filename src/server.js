@@ -1,10 +1,9 @@
-const http = require("http");
-const SocketIO = require("socket.io");
-const express = require("express");
-const localtunnel = require("localtunnel");
-const path = require("path");
-const cors = require('cors');
-const fs = require("fs")
+import http from  "http";
+import SocketIO from "socket.io";
+import express from "express";
+import path from "path";
+import cors from 'cors';
+import fs from "fs";
 
 const app = express();
 

@@ -32,7 +32,7 @@
     width: 2%;
 }
 
-#changeCameraMenu{
+#changeCameraMenu, #changeCodecsMenu{
     display: flex;
     justify-content: center;
 }
@@ -63,7 +63,7 @@ video{
 
 
 
-#cameras{
+#cameras, #videocodecs{
     margin-left: 5%;
     margin-right: 5%;
 }
@@ -118,4 +118,10 @@ html, body {
 #roomInput{
     margin-left: 5%;
     margin-right: 5%;
+}
+
+h5{
+    width: 20%;
+    text-align: center;
+    margin: 20px auto;
 }

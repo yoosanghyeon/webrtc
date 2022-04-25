@@ -12,6 +12,7 @@ const gainValue = document.getElementById("gainValue");
 const otherFace = document.getElementById("otherFace");
 const outerTitle = document.getElementById("outerTitle");
 const roomTitle = document.getElementById("roomTitle");
+const videocodecs = document.getElementById("videocodecs")
 
 call.hidden = true;
 
@@ -24,6 +25,9 @@ let mySocketId;
 let myPeerConnections = {};
 let otherVideoViews = {};
 let myDataChannel;
+
+const supportsSetCodecPreferences = window.RTCRtpTransceiver &&
+  'setCodecPreferences' in window.RTCRtpTransceiver.prototype;
 
 async function getCameras() {
 
@@ -75,7 +79,7 @@ async function getMedia(deviceId) {
   
 
   if(myStream){
-    // TODO : readState -> audio 까지 서버림
+    // Video만 변경
     myStream.getTracks().forEach(track => {
 
       if(track.kind == "video"){
@@ -277,9 +281,6 @@ socket.on("ice", (ice, socketId) => {
   if(!myPeerConnection) return
   myPeerConnection.addIceCandidate(ice);
 
-
-
-
 });
 
 socket.on("userDisconnect", (socketId) => {
@@ -464,13 +465,24 @@ function gotStream(stream) {
 function getCodecs(){
 
   // FireFox 지원 안함
-  if(RTCRtpSender.getCapabilities !== undefined){
+  if(supportsSetCodecPreferences){
     let capabilities = RTCRtpSender.getCapabilities("video");
 
     capabilities.codecs.forEach((codec) =>{
-      console.log("codec :: ", codec)
+
+      if (['video/red', 'video/ulpfec', 'video/rtx'].includes(codec.mimeType)) {
+        return;
+      }
+      const option = document.createElement("option");
+      option.value = (codec.mimeType + ' ' + (codec.sdpFmtpLine || '')).trim();
+      option.innerText = option.value;
+   
+      videocodecs.appendChild(option);
     })
   
+  }else{
+    videocodecs.hidden = true;
+    videocodecs.disable = true;
   }
   
 }
