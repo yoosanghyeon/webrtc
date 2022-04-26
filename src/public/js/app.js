@@ -195,15 +195,15 @@ async function handleCameraChange() {
   
   await getMedia(camerasSelect.value);
 
-  if(myStream){
-    // Video만 변경
-    myStream.getTracks().forEach(track => {
+  // if(myStream){
+  //   // Video만 변경
+  //   myStream.getTracks().forEach(track => {
 
-      if(track.kind == "video"){
-        track.start();
-      }
-    });
-  }
+  //     if(track.kind == "video"){
+  //       track.start();
+  //     }
+  //   });
+  // }
 
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
