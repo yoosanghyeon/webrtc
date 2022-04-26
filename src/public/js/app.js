@@ -178,7 +178,7 @@ function handleCameraClick() {
     cameraOff = true;
   }
 
-  onMutued();
+
 }
 
 async function handleCameraChange() {
@@ -195,16 +195,11 @@ async function handleCameraChange() {
   
   await getMedia(camerasSelect.value);
 
-  // if(myStream){
-  //   // Video만 변경
-  //   myStream.getTracks().forEach(track => {
-
-  //     if(track.kind == "video"){
-  //       track.start();
-  //     }
-  //   });
-  // }
-
+  if(myStream){
+    myStream
+      .getVideoTracks()
+      .forEach((track) => (track.enabled = true));
+  }
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
