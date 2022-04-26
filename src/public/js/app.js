@@ -182,8 +182,28 @@ function handleCameraClick() {
 }
 
 async function handleCameraChange() {
+
+  if(myStream){
+    // Video만 변경
+    myStream.getTracks().forEach(track => {
+
+      if(track.kind == "video"){
+        track.stop();
+      }
+    });
+  }
   
   await getMedia(camerasSelect.value);
+
+  if(myStream){
+    // Video만 변경
+    myStream.getTracks().forEach(track => {
+
+      if(track.kind == "video"){
+        track.start();
+      }
+    });
+  }
 
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
@@ -191,28 +211,12 @@ async function handleCameraChange() {
 
     try{
 
-      if(myStream){
-        // Video만 변경
-        myStream.getTracks().forEach(track => {
-    
-          if(track.kind == "video"){
-            track.stop();
-          }
-        });
-      }
+
       let videoTrack = myStream.getVideoTracks()[0];
       var sender = myPeerConnection.getSenders().find(function(s) {
         return s.track.kind == videoTrack.kind;
       });
-      if(myStream){
-        // Video만 변경
-        myStream.getTracks().forEach(track => {
-    
-          if(track.kind == "video"){
-            track.start();
-          }
-        });
-      }
+
       sender.replaceTrack(videoTrack);
 
     }catch(e){
