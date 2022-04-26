@@ -80,15 +80,7 @@ async function getMedia(deviceId) {
   }
   
 
-  if(myStream){
-    // Video만 변경
-    myStream.getTracks().forEach(track => {
 
-      if(track.kind == "video"){
-        track.stop();
-      }
-    });
-  }
 
   const initialConstrains = {
     audio: isMic,
@@ -199,11 +191,28 @@ async function handleCameraChange() {
 
     try{
 
+      if(myStream){
+        // Video만 변경
+        myStream.getTracks().forEach(track => {
+    
+          if(track.kind == "video"){
+            track.stop();
+          }
+        });
+      }
       let videoTrack = myStream.getVideoTracks()[0];
       var sender = myPeerConnection.getSenders().find(function(s) {
         return s.track.kind == videoTrack.kind;
       });
-
+      if(myStream){
+        // Video만 변경
+        myStream.getTracks().forEach(track => {
+    
+          if(track.kind == "video"){
+            track.start();
+          }
+        });
+      }
       sender.replaceTrack(videoTrack);
 
     }catch(e){
