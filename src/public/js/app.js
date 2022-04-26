@@ -14,6 +14,7 @@ const outerTitle = document.getElementById("outerTitle");
 const roomTitle = document.getElementById("roomTitle");
 const changeCodecsMenu = document.getElementById("changeCodecsMenu");
 const videoCodecsSelects = document.getElementById("videoCodecsSelects");
+const peerState = document.getElementById("peerState");
 
 call.hidden = true;
 
@@ -100,7 +101,11 @@ async function getMedia(deviceId) {
       height : {
         min : 240,
         max : 240
-      } 
+      },
+      frameRate : {
+        min : 7,
+        max : 30
+      }
     }
   
   };
@@ -115,6 +120,10 @@ async function getMedia(deviceId) {
       height : {
         min : 240,
         max : 240
+      },
+      frameRate : {
+        min : 7,
+        max : 30
       }
     }
   };
@@ -316,11 +325,15 @@ socket.on("userDisconnect", (socketId) => {
       otherFace.srcObject = myStream;
     }
 
-    otherVideos.removeChild(otherVideoViews[socketId]);
-    delete otherVideoViews[socketId]
-    delete myPeerConnections[socketId]
-    console.log(otherVideoViews);
-    console.log(myPeerConnections)
+    if(myPeerConnections[socketId]){
+      myPeerConnections[socketId].close()
+      otherVideos.removeChild(otherVideoViews[socketId]);
+      delete otherVideoViews[socketId]
+      delete myPeerConnections[socketId]
+      console.log(otherVideoViews);
+      console.log(myPeerConnections);
+    }
+    
   }
 
  
@@ -371,10 +384,13 @@ async function makeConnection(socketId) {
     });
   }
   
-  // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 ) 
+  // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 )
+
   myPeerConnection.addEventListener("onconnectionstatechange", (e) =>{
     console.log(e);
-  })
+  });
+
+ 
     
   
   myStream
