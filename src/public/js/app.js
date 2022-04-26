@@ -551,6 +551,6 @@ socket.on("connect", () => {
   console.log(socket.connected); // true
 });
 
-socket.on("disconnect", () => {
-  alert("socket disconnect"); // false
+socket.on("disconnect", (reason) => {
+  alert(reason); // false
 });
