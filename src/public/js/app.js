@@ -261,7 +261,7 @@ socket.on("welcome", async (users, socketId) => {
   mySocketId = socketId;
 
   users.forEach(async (user) =>{
-   
+    if (myPeerConnections[user.id]) return;    
     const myPeerConnection = await makeConnection(user.id);
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
