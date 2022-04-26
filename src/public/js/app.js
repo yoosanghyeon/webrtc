@@ -258,7 +258,10 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket Code
 socket.on("welcome", async (users, socketId) => {
 
-  mySocketId = socketId;
+  if(mySocketId === undefined){
+    mySocketId = socketId;
+  }
+  
 
   users.forEach(async (user) =>{
     if (myPeerConnections[user.id]) return;    
@@ -533,3 +536,13 @@ async function handleCodecsChange() {
   console.log(videoCodecsSelects.value);
 
 }
+
+
+
+socket.on("connect", () => {
+  console.log(socket.connected); // true
+});
+
+socket.on("disconnect", () => {
+  alert("socket disconnect"); // false
+});
