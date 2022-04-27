@@ -14,7 +14,6 @@ const outerTitle = document.getElementById("outerTitle");
 const roomTitle = document.getElementById("roomTitle");
 const changeCodecsMenu = document.getElementById("changeCodecsMenu");
 const videoCodecsSelects = document.getElementById("videoCodecsSelects");
-const peerState = document.getElementById("peerState");
 
 call.hidden = true;
 
@@ -80,44 +79,23 @@ async function getMedia(deviceId) {
   }
   
 
+  if(myStream){
+    // Video만 변경
+    myStream.getTracks().forEach(track => {
 
+      if(track.kind == "video"){
+        track.stop();
+      }
+    });
+  }
 
   const initialConstrains = {
     audio: isMic,
-    video: {
-       facingMode: "user",
-       width : {
-        min : 240,
-        max : 240
-      },
-      height : {
-        min : 240,
-        max : 240
-      },
-      frameRate : {
-        min : 7,
-        max : 30
-      }
-    }
-  
+    video: { facingMode: "user" },
   };
   const cameraConstraints = {
     audio: isMic,
-    video: { 
-      deviceId: { exact: deviceId },
-      width : {
-        min : 240,
-        max : 240
-      },
-      height : {
-        min : 240,
-        max : 240
-      },
-      frameRate : {
-        min : 7,
-        max : 30
-      }
-    }
+    video: { deviceId: { exact: deviceId } },
   };
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
@@ -178,34 +156,18 @@ function handleCameraClick() {
     cameraOff = true;
   }
 
-
+  onMutued();
 }
 
 async function handleCameraChange() {
-
-  if(myStream){
-    // Video만 변경
-    myStream.getTracks().forEach(track => {
-
-      if(track.kind == "video"){
-        track.stop();
-      }
-    });
-  }
   
   await getMedia(camerasSelect.value);
 
-  if(myStream){
-    myStream
-      .getVideoTracks()
-      .forEach((track) => (track.enabled = true));
-  }
    // TODO : AUDIO Track 바뀌는지 확인
   for(socketId in myPeerConnections){
     const myPeerConnection = myPeerConnections[socketId];  
 
     try{
-
 
       let videoTrack = myStream.getVideoTracks()[0];
       var sender = myPeerConnection.getSenders().find(function(s) {
@@ -266,13 +228,10 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket Code
 socket.on("welcome", async (users, socketId) => {
 
-  if(mySocketId === undefined){
-    mySocketId = socketId;
-  }
-  
+  mySocketId = socketId;
 
   users.forEach(async (user) =>{
-    if (myPeerConnections[user.id]) return;    
+   
     const myPeerConnection = await makeConnection(user.id);
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
@@ -336,15 +295,11 @@ socket.on("userDisconnect", (socketId) => {
       otherFace.srcObject = myStream;
     }
 
-    if(myPeerConnections[socketId]){
-      myPeerConnections[socketId].close()
-      otherVideos.removeChild(otherVideoViews[socketId]);
-      delete otherVideoViews[socketId]
-      delete myPeerConnections[socketId]
-      console.log(otherVideoViews);
-      console.log(myPeerConnections);
-    }
-    
+    otherVideos.removeChild(otherVideoViews[socketId]);
+    delete otherVideoViews[socketId]
+    delete myPeerConnections[socketId]
+    console.log(otherVideoViews);
+    console.log(myPeerConnections)
   }
 
  
@@ -395,13 +350,10 @@ async function makeConnection(socketId) {
     });
   }
   
-  // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 )
-
+  // todo (상태 파악하여 디스커넥트 => socket connection 을 이용한 close 처리로 변경 ) 
   myPeerConnection.addEventListener("onconnectionstatechange", (e) =>{
     console.log(e);
-  });
-
- 
+  })
     
   
   myStream
@@ -544,13 +496,3 @@ async function handleCodecsChange() {
   console.log(videoCodecsSelects.value);
 
 }
-
-
-
-socket.on("connect", () => {
-  console.log(socket.connected); // true
-});
-
-socket.on("disconnect", (reason) => {
-  alert(reason); // false
-});

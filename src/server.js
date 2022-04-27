@@ -66,10 +66,6 @@ wsServer.on("connection", (socket) => {
   socket.on("ice", (ice, candidateSendID, candidateReceiveID) => {
     wsServer.sockets.to(candidateReceiveID).emit("ice", ice, candidateSendID);
   });
-  // socket.on("userDisconnect", (room, exitId) => {
-  //   console.log("userDisconnect", socket.id);
-  //   socket.to(room).emit("userDisconnect", socket.id);
-  // });
 
 
   // disconnecting event method 를 사용하는 이유는 
@@ -100,8 +96,6 @@ wsServer.on("connection", (socket) => {
     }
 
   })
-
-
 });
 
 
