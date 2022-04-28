@@ -502,7 +502,7 @@ async function getCodecs(){
 
   // FireFox 지원 안함
   if(supportsSetCodecPreferences){
-    capabilities = RTCRtpSender.getCapabilities("video");
+    let capabilities = RTCRtpSender.getCapabilities("video");
      
     capabilities.codecs.forEach((codec) =>{
 
