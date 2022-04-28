@@ -515,16 +515,16 @@ async function getCodecs(){
       videoCodecsSelects.appendChild(option);
     });
 
-    // codecs = capabilities.codecs;
-    // selectedCodecIndex = codecs.findIndex((c) => {
-    //   console.log(c.mimeType)
-    //   return c.mimeType === "video/H264"
-    // });
-    // console.log("codecs index : ", selectedCodecIndex);
-    // codecs = codecs.splice(selectedCodecIndex, 1);
+    codecs = capabilities.codecs;
+    selectedCodecIndex = codecs.findIndex((c) => {
+      console.log(c.mimeType);
+      return c.mimeType === "video/H264";
+    });
+    console.log("codecs index : ", selectedCodecIndex);
+    codecs = codecs.splice(selectedCodecIndex, 1);
     
-    // console.log("codec :", codecs);
-    // videoCodecsSelects.selectedIndex = selectedCodecIndex;
+    console.log("codec :", codecs);
+    videoCodecsSelects.selectedIndex = selectedCodecIndex;
 
   }else{
     changeCodecsMenu.hidden = true;
