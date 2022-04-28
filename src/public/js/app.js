@@ -22,7 +22,7 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 
-let mySocketId;
+
 let myPeerConnections = {};
 let otherVideoViews = {};
 let myDataChannel;
@@ -58,7 +58,7 @@ async function getCameras() {
 
 async function getMedia(deviceId) {
   
-  getCodecs();
+  await getCodecs();
   const devices = await navigator.mediaDevices.enumerateDevices();
   
   // 마이크 체크 
@@ -93,38 +93,28 @@ async function getMedia(deviceId) {
     audio: isMic,
     video: { 
       facingMode: "user" ,
-      width: {
-        min: 240,
-        max: 240
-      },
-      height: {
-        min: 240,
-        max: 240
-      },
+      width : 240,
+      height: 240,
       frameRate: {
           min: 7,
           max: 30
       }
     },
   };
+
   const cameraConstraints = {
     audio: isMic,
     video: { 
       deviceId: { exact: deviceId },
-      width: {
-        min: 240,
-        max: 240
-      },
-      height: {
-        min: 240,
-        max: 240
-      },
+      width : 240,
+      height: 240,
       frameRate: {
           min: 7,
           max: 30
       }
     }
   };
+
   try {
     myStream = await navigator.mediaDevices.getUserMedia(
       deviceId ? cameraConstraints : initialConstrains
@@ -144,6 +134,8 @@ async function getMedia(deviceId) {
 
     myFace.srcObject = myStream; 
     otherFace.srcObject = myStream;
+
+
   } catch (e) {
     console.log(e);
   }
@@ -233,7 +225,7 @@ micGain.addEventListener("input", (event) =>{
 const welcome = document.getElementById("welcome");
 const welcomeForm = welcome.querySelector("form");
 
-async function initCall(socketId) {
+async function initCall() {
   welcome.hidden = true;
   call.hidden = false;
   await getMedia();
@@ -256,15 +248,13 @@ welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 // Socket Code
 socket.on("welcome", async (users, socketId) => {
 
-  mySocketId = socketId;
-
   users.forEach(async (user) =>{
    
     const myPeerConnection = await makeConnection(user.id);
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
     console.log("sent the offer");
-    socket.emit("offer", offer, user.id, mySocketId);
+    socket.emit("offer", offer, user.id, socket.id);
   })
 
 });
@@ -288,7 +278,7 @@ socket.on("offer", async (offer, offerSendId) => {
     myPeerConnection.setRemoteDescription(offer);
     const answer = await myPeerConnection.createAnswer();
     myPeerConnection.setLocalDescription(answer);
-    socket.emit("answer", answer, offerSendId, mySocketId);
+    socket.emit("answer", answer, offerSendId, socket.id);
     console.log("sent the answer");
   } catch (error) {
     console.log(error);
@@ -318,7 +308,6 @@ socket.on("userDisconnect", (socketId) => {
   
   if(otherVideoViews[socketId] !==  undefined){
 
-    // console.log()
     if(otherVideoViews[socketId].srcObject.id === otherFace.srcObject.id){
       otherFace.srcObject = myStream;
     }
@@ -356,8 +345,10 @@ async function makeConnection(socketId) {
     ]
   });
 
+  
+
   myPeerConnection.addEventListener("icecandidate", (data) =>{
-    socket.emit("ice", data.candidate, mySocketId, socketId);
+    socket.emit("ice", data.candidate, socket.id, socketId);
   });
 
   // 구세대 브라우저의 간의 api 변경으로 인한 분기
@@ -402,6 +393,17 @@ async function makeConnection(socketId) {
     }
   });
   
+  
+  // codec 적용 
+  if(supportsSetCodecPreferences){
+    const transceiver = myPeerConnection.getTransceivers().find(t => t.sender && t.sender.track === myStream.getVideoTracks()[0]);
+    if(transceiver){
+      transceiver.setCodecPreferences(codecs);
+      console.log("transceiver :: ", transceiver);
+    }
+
+  }
+
   myPeerConnections[socketId] = myPeerConnection;
   return myPeerConnection;  
 }
@@ -493,12 +495,14 @@ function gotStream(stream) {
 
 }
 
-function getCodecs(){
+var codecs;
+let selectedCodecIndex
+async function getCodecs(){
 
   // FireFox 지원 안함
   if(supportsSetCodecPreferences){
-    let capabilities = RTCRtpSender.getCapabilities("video");
-
+    capabilities = RTCRtpSender.getCapabilities("video");
+     
     capabilities.codecs.forEach((codec) =>{
 
       if (['video/red', 'video/ulpfec', 'video/rtx'].includes(codec.mimeType)) {
@@ -509,8 +513,19 @@ function getCodecs(){
       option.innerText = option.value;
    
       videoCodecsSelects.appendChild(option);
-    })
-  
+    });
+
+    codecs = capabilities.codecs;
+    selectedCodecIndex = codecs.findIndex((c) => {
+      console.log(c.mimeType)
+      return c.mimeType === "video/H264"
+    });
+    console.log("codecs index : ", selectedCodecIndex);
+    codecs = codecs.splice(selectedCodecIndex, 1);
+    
+    console.log("codec :", codecs);
+    videoCodecsSelects.selectedIndex = selectedCodecIndex;
+
   }else{
     changeCodecsMenu.hidden = true;
     videoCodecsSelects.hidden = true;
@@ -522,5 +537,6 @@ function getCodecs(){
 async function handleCodecsChange() {
   
   console.log(videoCodecsSelects.value);
+  alert("전송 코덱은 아직 바뀌지 않음");
 
 }
