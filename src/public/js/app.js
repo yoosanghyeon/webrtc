@@ -346,6 +346,16 @@ async function makeConnection(socketId) {
   });
 
   
+  // codec 적용 
+  if(supportsSetCodecPreferences){
+    console.log(codecs[0])
+    const transceiver = await myPeerConnection.getTransceivers().find(t => t.sender && t.sender.track === myStream.getVideoTracks()[0]);
+    if(transceiver){
+      transceiver.setCodecPreferences(codecs);
+      console.log("transceiver :: ", transceiver);
+    }
+
+  }
 
   myPeerConnection.addEventListener("icecandidate", (data) =>{
     socket.emit("ice", data.candidate, socket.id, socketId);
@@ -394,15 +404,6 @@ async function makeConnection(socketId) {
   });
   
   
-  // codec 적용 
-  if(supportsSetCodecPreferences){
-    // const transceiver = await myPeerConnection.getTransceivers().find(t => t.sender && t.sender.track === myStream.getVideoTracks()[0]);
-    // if(transceiver){
-    //   transceiver.setCodecPreferences(codecs);
-    //   console.log("transceiver :: ", transceiver);
-    // }
-
-  }
 
   myPeerConnections[socketId] = myPeerConnection;
   return myPeerConnection;  
