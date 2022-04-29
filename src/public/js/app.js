@@ -338,7 +338,7 @@ async function makeConnection(socketId) {
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: ['turn:101.101.209.28?transport=tcp' , 'turn:101.101.209.28?transport=udp'],
+        urls: ['turn:49.50.163.173?transport=tcp' , 'turn:49.50.163.173?transport=udp'],
         credential: 'test123',
         username: 'test'
       }
