@@ -22,14 +22,17 @@ let muted = false;
 let cameraOff = false;
 let roomName;
 
-
+// Peer 객체
 let myPeerConnections = {};
+
 let otherVideoViews = {};
 let myDataChannel;
 
 const supportsSetCodecPreferences = window.RTCRtpTransceiver &&
   'setCodecPreferences' in window.RTCRtpTransceiver.prototype;
 
+
+// 자신의 카메라(캠) 얻어오는 함수
 async function getCameras() {
 
   try {
@@ -53,9 +56,7 @@ async function getCameras() {
 }
 
 
-
-
-
+// 자신의 미디어(비디오)를 얻어오는 함수
 async function getMedia(deviceId) {
   
   await getCodecs();
@@ -77,7 +78,6 @@ async function getMedia(deviceId) {
     });
     
   }
-  
 
   if(myStream){
     // Video만 변경
@@ -141,7 +141,7 @@ async function getMedia(deviceId) {
   }
 }
 
-// temp sample code 
+// 오디오 음소거 하는 함수
 function onMutued(){
   muted = true;
   muteBtn.innerText = "Unmute";
@@ -150,6 +150,7 @@ function onMutued(){
   .forEach((track) => (track.enabled = false));
 }
 
+// 오디오 음소거 클릭 이벤트 함수
 function handleMuteClick() {
   myStream
     .getAudioTracks()
@@ -163,6 +164,7 @@ function handleMuteClick() {
   }
 }
 
+// 비디오 화면 중지 이벤트 함수
 function handleCameraClick() {
 
   myStream
@@ -179,6 +181,7 @@ function handleCameraClick() {
   onMutued();
 }
 
+// 미디어 카메라를 바꾸는 함수
 async function handleCameraChange() {
   
   await getMedia(camerasSelect.value);
@@ -232,6 +235,7 @@ async function initCall() {
 
 }
 
+// 첫 화면 채팅방 입장 클릭 함수
 async function handleWelcomeSubmit(event) {
   event.preventDefault();
   outerTitle.hidden = true;
@@ -246,6 +250,8 @@ async function handleWelcomeSubmit(event) {
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 // Socket Code
+// 웹소켓 코드로 각 WebRTC 피어 전달과정에 따라 구성
+// WebRTC 전달과정은 readme.md 또는 PTT첨부자료 참조 바랍니다.
 socket.on("welcome", async (users, socketId) => {
 
   users.forEach(async (user) =>{
@@ -326,7 +332,7 @@ socket.on("connect_error", (error) => {
   console.log(error);
 });
 
-// RTC Code
+// 자신의 피어 객체를 생성하는 함수
 async function makeConnection(socketId) {
  
   console.log("makeConnection");
@@ -334,16 +340,23 @@ async function makeConnection(socketId) {
     return
   }
 
-
+  // Turn 서버 설정 
   const myPeerConnection = new RTCPeerConnection({
     iceServers: [
       {
-        urls: ['turn:49.50.163.173?transport=tcp' , 'turn:49.50.163.173?transport=udp'],
-        credential: 'test123',
+        urls: ['turn:118.67.129.88?transport=tcp' , 'turn:118.67.129.88?transport=udp'],
+        credential: 'test',
         username: 'test'
       }
     ]
   });
+  // const myPeerConnection = new RTCPeerConnection({
+  //   iceServers: [
+  //     {
+  //       urls: ['stun:stun.l.google.com:19302' , 'turn:0.peerjs.com:3478'],
+  //     }
+  //   ]
+  // });
 
   
   // codec 적용 
@@ -414,6 +427,7 @@ function handleIce(data) {
   socket.emit("ice", data.candidate, roomName);
 }
 
+// 다른 피어객체를 받았을 시 View로 표현함
 function addOtherVideoData(socketId, dataStream){
   if(otherVideoViews[socketId]) return;
   const peerFace = document.createElement("video");
@@ -534,7 +548,7 @@ async function getCodecs(){
   }
   
 }
-
+// 비디오 코덱 변경 함수
 async function handleCodecsChange() {
   
   console.log(videoCodecsSelects.value);

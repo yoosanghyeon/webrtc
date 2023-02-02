@@ -9,17 +9,14 @@ const app = express();
 
 
 
-const port = 2000;
+const port = 5000;
 
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use("/public", express.static(__dirname + "/public"));
 
-
-
 app.get("/", (_, res) => {
   res.render("home");
-  // res.sendFile(__dirname + "/views/" + "index.html")
 });
 
 
